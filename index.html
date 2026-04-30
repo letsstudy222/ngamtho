@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ngâm Thơ AI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:        #A07830;
+    --gold-light:  #C8A050;
+    --gold-faint:  #F5EDD8;
+    --gold-pale:   #FAF5E8;
+    --ink:         #1E1810;
+    --ink-mid:     #4A3D2A;
+    --ink-soft:    #7A6A52;
+    --ink-faint:   #B0A088;
+    --paper:       #FDFAF3;
+    --paper-warm:  #F7F0DF;
+    --paper-border:#E8DFC8;
+    --red-line:    #C0392B;
+    --playing-bg:  #FFF8E6;
+    --radius:      10px;
+    --shadow:      0 2px 16px rgba(100,70,20,0.10);
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--paper-warm);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 31px,
+        rgba(160,120,48,0.06) 31px,
+        rgba(160,120,48,0.06) 32px
+      );
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1rem 4rem;
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    margin-bottom: 2.2rem;
+    position: relative;
+  }
+
+  .header-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 0.6rem;
+  }
+
+  .header-ornament::before,
+  .header-ornament::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light));
+  }
+  .header-ornament::after {
+    background: linear-gradient(90deg, var(--gold-light), transparent);
+  }
+
+  .ornament-diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 7px;
+    letter-spacing: 0.6px;
+    font-weight: 300;
+  }
+
+  /* ── MAIN CARD ── */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--paper-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem 1.8rem;
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.9rem;
+  }
+
+  /* ── POEM INPUT ── */
+  .poem-wrap {
+    position: relative;
+  }
+
+  #poem-input {
+    width: 100%;
+    min-height: 190px;
+    padding: 14px 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15.5px;
+    line-height: 2;
+    color: var(--ink);
+    background: var(--gold-pale);
+    border: 1px solid var(--paper-border);
+    border-left: 3px solid var(--gold-light);
+    border-radius: 6px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    caret-color: var(--gold);
+  }
+
+  #poem-input:focus {
+    border-color: var(--gold-light);
+    border-left-color: var(--gold);
+    background: #FFFDF6;
+  }
+
+  #poem-input::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .poem-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .hint { font-size: 11.5px; color: var(--ink-faint); font-style: italic; }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--paper-border);
+    border-radius: 5px;
+    padding: 4px 11px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-ghost:hover { background: var(--paper-warm); color: var(--gold); border-color: var(--gold-light); }
+
+  /* ── CONTROLS ── */
+  .controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 500px) { .controls-grid { grid-template-columns: 1fr; } }
+
+  .control-group label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  select, input[type=range] {
+    width: 100%;
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+
+  select {
+    padding: 8px 32px 8px 11px;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: var(--gold-pale);
+    border: 1px solid var(--paper-border);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23A07830' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.15s;
+  }
+  select:focus { border-color: var(--gold); }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--paper-border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    box-shadow: 0 1px 4px rgba(100,70,10,0.3);
+    transition: transform 0.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    cursor: pointer;
+  }
+
+  .slider-val {
+    min-width: 36px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gold);
+    text-align: right;
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+
+  /* ── GENERATE BUTTON ── */
+  .btn-generate {
+    width: 100%;
+    padding: 15px 20px;
+    background: var(--gold);
+    color: #FEF9EC;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s, transform 0.1s, opacity 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-generate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .btn-generate:hover { background: #8A6620; }
+  .btn-generate:active { transform: scale(0.99); }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-icon {
+    font-size: 18px;
+    line-height: 1;
+    transition: transform 0.3s;
+  }
+
+  .btn-generate:not(:disabled):hover .btn-icon { transform: scale(1.15) rotate(-5deg); }
+
+  /* ── PROGRESS / STATUS ── */
+  .progress-section {
+    display: none;
+    margin-top: 0;
+  }
+  .progress-section.visible { display: block; }
+
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--paper-border);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .line-status {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pulse-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse-anim 1s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse-anim {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── POEM VIEWER (with highlight) ── */
+  .poem-viewer {
+    display: none;
+    background: var(--gold-pale);
+    border: 1px solid var(--paper-border);
+    border-left: 3px solid var(--gold-light);
+    border-radius: 6px;
+    padding: 14px 16px;
+    max-height: 220px;
+    overflow-y: auto;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    line-height: 2.1;
+    color: var(--ink-mid);
+    margin-top: 12px;
+    scroll-behavior: smooth;
+  }
+
+  .poem-viewer.visible { display: block; }
+
+  .poem-line {
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.3s, color 0.3s;
+    cursor: default;
+  }
+
+  .poem-line.active {
+    background: var(--gold-faint);
+    color: var(--ink);
+    font-weight: 500;
+    border-left: 2px solid var(--gold);
+    padding-left: 10px;
+    margin-left: -4px;
+  }
+
+  .poem-line.done {
+    color: var(--ink-faint);
+  }
+
+  /* ── AUDIO PLAYER ── */
+  .player-section {
+    display: none;
+  }
+  .player-section.visible { display: block; }
+
+  .player-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--playing-bg);
+    border: 1px solid #E8D898;
+    border-radius: 8px;
+  }
+
+  .play-pause-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #FEF9EC;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 2px 8px rgba(160,120,48,0.3);
+  }
+  .play-pause-btn:hover { background: #8A6620; }
+  .play-pause-btn:active { transform: scale(0.94); }
+
+  .stop-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--paper-border);
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .stop-btn:hover { background: var(--paper-warm); color: var(--red-line); border-color: var(--red-line); }
+
+  .player-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .player-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .player-line-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-mid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .player-progress-wrap {
+    height: 3px;
+    background: var(--paper-border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .player-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .player-count {
+    font-size: 11px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+
+  /* ── NO VOICE WARNING ── */
+  .warning-box {
+    display: none;
+    padding: 11px 14px;
+    background: #FEF8E6;
+    border: 1px solid #E8C870;
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: #7A5C10;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  .warning-box.visible { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.3px;
+  }
+
+  footer .dots { letter-spacing: 4px; display: block; margin-bottom: 4px; color: var(--gold-light); }
+
+  /* ── SCROLLBAR ── */
+  .poem-viewer::-webkit-scrollbar { width: 5px; }
+  .poem-viewer::-webkit-scrollbar-track { background: transparent; }
+  .poem-viewer::-webkit-scrollbar-thumb { background: var(--paper-border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-ornament">
+    <div class="ornament-diamond"></div>
+  </div>
+  <h1>Ngâm Thơ <em>AI</em></h1>
+  <p class="subtitle">Chuyển thơ Việt thành tiếng ngâm cổ điển — ngay trên trình duyệt</p>
+</header>
+
+<!-- ── POEM INPUT ── -->
+<div class="card">
+  <div class="card-title">Bài thơ</div>
+  <div class="poem-wrap">
+    <textarea id="poem-input" rows="8"
+      placeholder="Dán bài thơ vào đây...&#10;&#10;Ví dụ: Đêm qua ra đứng bờ ao&#10;Trông cá cá lặn, trông sao sao mờ..."></textarea>
+  </div>
+  <div class="poem-actions">
+    <span class="hint" id="line-count-hint">0 dòng</span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-ghost" onclick="loadSample()">Thơ mẫu</button>
+      <button class="btn-ghost" onclick="clearPoem()">Xoá</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETTINGS ── -->
+<div class="card">
+  <div class="card-title">Tuỳ chỉnh giọng ngâm</div>
+  <div class="controls-grid">
+    <div class="control-group">
+      <label for="voice-gender">Giọng đọc</label>
+      <select id="voice-gender">
+        <option value="female">Nữ (ưu tiên)</option>
+        <option value="male">Nam (ưu tiên)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="voice-select">Chọn giọng cụ thể</label>
+      <select id="voice-select">
+        <option value="">Đang tải giọng...</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Tốc độ ngâm</label>
+      <div class="slider-row">
+        <input type="range" id="rate-slider" min="0.3" max="0.9" step="0.05" value="0.55">
+        <span class="slider-val" id="rate-val">0.55×</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Ngắt nghỉ giữa câu (ms)</label>
+      <div class="slider-row">
+        <input type="range" id="pause-slider" min="300" max="2000" step="100" value="900">
+        <span class="slider-val" id="pause-val">900ms</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Cao độ giọng</label>
+      <div class="slider-row">
+        <input type="range" id="pitch-slider" min="0.7" max="1.4" step="0.05" value="1.1">
+        <span class="slider-val" id="pitch-val">1.10</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Hiệu ứng vibrato</label>
+      <div class="slider-row">
+        <input type="range" id="vibrato-slider" min="0" max="4" step="1" value="2">
+        <span class="slider-val" id="vibrato-val">Vừa</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-box" id="warning-box">
+    ⚠ Trình duyệt không tìm thấy giọng tiếng Việt. Sẽ dùng giọng mặc định — chất lượng ngâm có thể thấp hơn.
+    Khuyến nghị: dùng Chrome hoặc Edge, và cài thêm giọng tiếng Việt trong cài đặt hệ điều hành.
+  </div>
+</div>
+
+<!-- ── GENERATE + PLAYER ── -->
+<div class="card">
+  <button class="btn-generate" id="gen-btn" onclick="handleGenerate()">
+    <span class="btn-icon">♪</span>
+    Tạo bản ngâm thơ
+  </button>
+
+  <!-- Progress -->
+  <div class="progress-section" id="progress-section">
+    <div style="height:14px;"></div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    <div class="line-status">
+      <div class="pulse-dot" id="pulse-dot"></div>
+      <span id="status-text">Đang chuẩn bị...</span>
+    </div>
+  </div>
+
+  <!-- Poem viewer with highlight -->
+  <div class="poem-viewer" id="poem-viewer"></div>
+
+  <!-- Audio player UI -->
+  <div class="player-section" id="player-section">
+    <div style="height:14px;"></div>
+    <div class="player-inner">
+      <button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()" title="Phát / Tạm dừng">
+        ▶
+      </button>
+      <button class="stop-btn" onclick="stopAll()" title="Dừng hẳn">■</button>
+      <div class="player-info">
+        <div class="player-label">Đang ngâm</div>
+        <div class="player-line-text" id="player-line-text">—</div>
+        <div class="player-progress-wrap">
+          <div class="player-progress-fill" id="player-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="player-count" id="player-count">0 / 0</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="dots">· · ·</span>
+  Sử dụng Web Speech API · Không cần backend · Chạy hoàn toàn trên trình duyệt
+</footer>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────
+const state = {
+  voices: [],
+  viVoices: [],
+  lines: [],
+  currentLine: 0,
+  totalLines: 0,
+  playing: false,
+  paused: false,
+  stopped: false,
+  pauseResolve: null,
+};
+
+const VIBRATO_LABELS = ['Tắt', 'Nhẹ', 'Vừa', 'Nhiều', 'Mạnh'];
+
+// ── SAMPLE POEMS ──────────────────────────────────────────────────────
+const SAMPLES = [
+`Đêm qua ra đứng bờ ao
+Trông cá cá lặn, trông sao sao mờ
+Buồn trông con nhện giăng tơ
+Nhện ơi nhện hỡi, nhện chờ mối ai
+Buồn trông chênh chếch sao mai
+Sao ơi sao hỡi, nhớ ai sao mờ`,
+
+`Thân em như tấm lụa đào
+Phất phơ giữa chợ biết vào tay ai
+
+Thân em như củ ấu gai
+Ruột trong thì trắng, vỏ ngoài thì đen`,
+
+`Công cha như núi Thái Sơn
+Nghĩa mẹ như nước trong nguồn chảy ra
+Một lòng thờ mẹ kính cha
+Cho tròn chữ hiếu mới là đạo con`,
+];
+
+let sampleIdx = 0;
+
+// ── INIT ───────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  setupSliders();
+  setupTextarea();
+  loadSample();
+});
+
+function loadVoices() {
+  const all = window.speechSynthesis.getVoices();
+  if (!all.length) return;
+  state.voices = all;
+
+  // Tìm giọng tiếng Việt
+  state.viVoices = all.filter(v =>
+    v.lang.startsWith('vi') || v.name.toLowerCase().includes('viet') || v.name.toLowerCase().includes('vi-')
+  );
+
+  const haVI = state.viVoices.length > 0;
+  document.getElementById('warning-box').classList.toggle('visible', !haVI);
+
+  const pool = haVI ? state.viVoices : all;
+  populateVoiceSelect(pool);
+  autoSelectVoice();
+}
+
+function populateVoiceSelect(pool) {
+  const sel = document.getElementById('voice-select');
+  sel.innerHTML = '';
+  pool.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(opt);
+  });
+}
+
+function autoSelectVoice() {
+  const gender = document.getElementById('voice-gender').value;
+  const pool = state.viVoices.length ? state.viVoices : state.voices;
+  const genderKw = gender === 'female'
+    ? ['female','woman','girl','nữ','hoai','lan','thu','mai','linh']
+    : ['male','man','boy','nam','minh','hung','quang','tuan'];
+
+  let idx = pool.findIndex(v =>
+    genderKw.some(k => v.name.toLowerCase().includes(k))
+  );
+  if (idx < 0) idx = 0;
+
+  const sel = document.getElementById('voice-select');
+  if (sel.options[idx]) sel.selectedIndex = idx;
+}
+
+document.getElementById('voice-gender').addEventListener('change', autoSelectVoice);
+
+function setupSliders() {
+  const bind = (id, outId, fmt) => {
+    const el = document.getElementById(id);
+    const out = document.getElementById(outId);
+    el.addEventListener('input', () => { out.textContent = fmt(el.value); });
+    out.textContent = fmt(el.value);
+  };
+  bind('rate-slider',    'rate-val',    v => parseFloat(v).toFixed(2) + '×');
+  bind('pause-slider',   'pause-val',   v => v + 'ms');
+  bind('pitch-slider',   'pitch-val',   v => parseFloat(v).toFixed(2));
+  bind('vibrato-slider', 'vibrato-val', v => VIBRATO_LABELS[+v]);
+}
+
+function setupTextarea() {
+  const ta = document.getElementById('poem-input');
+  ta.addEventListener('input', updateLineCount);
+}
+
+function updateLineCount() {
+  const lines = getPoemLines();
+  document.getElementById('line-count-hint').textContent = lines.length + ' dòng';
+}
+
+function getPoemLines() {
+  return document.getElementById('poem-input').value
+    .split('\n')
+    .map(l => l.trim());
+}
+
+function loadSample() {
+  document.getElementById('poem-input').value = SAMPLES[sampleIdx % SAMPLES.length];
+  sampleIdx++;
+  updateLineCount();
+}
+
+function clearPoem() {
+  document.getElementById('poem-input').value = '';
+  updateLineCount();
+  stopAll();
+}
+
+// ── BUILD POEM VIEWER ─────────────────────────────────────────────────
+function buildViewer(lines) {
+  const viewer = document.getElementById('poem-viewer');
+  viewer.innerHTML = '';
+  lines.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = 'poem-line';
+    div.id = 'pline-' + i;
+    div.textContent = line || '\u00A0';
+    viewer.appendChild(div);
+  });
+  viewer.classList.add('visible');
+}
+
+function highlightLine(idx, total) {
+  const viewer = document.getElementById('poem-viewer');
+  // reset all
+  viewer.querySelectorAll('.poem-line').forEach((el, i) => {
+    el.classList.remove('active');
+    if (i < idx) el.classList.add('done');
+    else el.classList.remove('done');
+  });
+
+  const active = document.getElementById('pline-' + idx);
+  if (active) {
+    active.classList.add('active');
+    active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Player UI
+  const lineText = state.lines[idx] || '';
+  document.getElementById('player-line-text').textContent = lineText || '(ngắt nghỉ)';
+  document.getElementById('player-count').textContent = (idx + 1) + ' / ' + total;
+  document.getElementById('player-progress-fill').style.width =
+    Math.round(((idx) / Math.max(total - 1, 1)) * 100) + '%';
+
+  // Top progress
+  document.getElementById('progress-fill').style.width =
+    Math.round(((idx) / Math.max(total - 1, 1)) * 100) + '%';
+  document.getElementById('status-text').textContent =
+    `Đang ngâm dòng ${idx + 1} / ${total}: "${lineText}"`;
+}
+
+// ── SPEECH ENGINE ──────────────────────────────────────────────────────
+function getSelectedVoice() {
+  const pool = state.viVoices.length ? state.viVoices : state.voices;
+  const idx = parseInt(document.getElementById('voice-select').value) || 0;
+  return pool[idx] || null;
+}
+
+function speak(text, rate, pitch) {
+  return new Promise((resolve) => {
+    if (state.stopped) { resolve(); return; }
+
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate  = rate;
+    utt.pitch = pitch;
+    utt.volume = 1;
+
+    const voice = getSelectedVoice();
+    if (voice) utt.voice = voice;
+    if (voice) utt.lang = voice.lang;
+    else utt.lang = 'vi-VN';
+
+    utt.onend = resolve;
+    utt.onerror = resolve;
+
+    window.speechSynthesis.speak(utt);
+  });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => {
+    if (state.stopped) { resolve(); return; }
+    const id = setTimeout(resolve, ms);
+    // Store so we can cancel
+    state._sleepId = id;
+  });
+}
+
+// Vibrato: split a line into syllable chunks and vary pitch slightly
+function splitVibratoChunks(line, level) {
+  if (level === 0) return [[line, 0]]; // [text, pitchDelta]
+  // Split by spaces into words
+  const words = line.split(/\s+/).filter(Boolean);
+  if (words.length <= 1) return [[line, 0]];
+
+  const swingMap = [0, 0.04, 0.07, 0.10, 0.14];
+  const swing = swingMap[level] || 0;
+
+  // Group into pairs of 1-2 words per chunk
+  const chunks = [];
+  for (let i = 0; i < words.length; i += 2) {
+    const chunk = words.slice(i, i + 2).join(' ');
+    const delta = (i % 4 < 2) ? swing : -swing * 0.6;
+    chunks.push([chunk, delta]);
+  }
+  return chunks;
+}
+
+// ── MAIN RECITATION LOOP ───────────────────────────────────────────────
+async function recite() {
+  const rate     = parseFloat(document.getElementById('rate-slider').value);
+  const pauseMs  = parseInt(document.getElementById('pause-slider').value);
+  const pitch    = parseFloat(document.getElementById('pitch-slider').value);
+  const vibrato  = parseInt(document.getElementById('vibrato-slider').value);
+
+  const lines    = state.lines;
+  const total    = lines.length;
+
+  state.playing = true;
+  state.paused  = false;
+  state.stopped = false;
+
+  updatePlayerUI('playing');
+
+  for (let i = 0; i < total; i++) {
+    if (state.stopped) break;
+
+    // Handle pause
+    while (state.paused && !state.stopped) {
+      await sleep(100);
+    }
+    if (state.stopped) break;
+
+    state.currentLine = i;
+    highlightLine(i, total);
+
+    const line = lines[i];
+
+    if (!line) {
+      // Empty line = longer pause
+      await sleep(pauseMs * 1.5);
+      continue;
+    }
+
+    const chunks = splitVibratoChunks(line, vibrato);
+
+    for (const [chunk, pitchDelta] of chunks) {
+      if (state.stopped) break;
+      while (state.paused && !state.stopped) { await sleep(80); }
+      if (state.stopped) break;
+
+      const finalPitch = Math.max(0.1, Math.min(2, pitch + pitchDelta));
+      await speak(chunk, rate, finalPitch);
+
+      // tiny gap between chunks
+      if (chunks.length > 1) await sleep(60);
+    }
+
+    // Pause after line
+    if (i < total - 1 && !state.stopped) {
+      await sleep(pauseMs);
+    }
+  }
+
+  if (!state.stopped) {
+    // Done
+    finishRecitation();
+  }
+}
+
+function finishRecitation() {
+  state.playing = false;
+  state.paused  = false;
+
+  document.getElementById('status-text').textContent = 'Hoàn thành ✓';
+  document.getElementById('pulse-dot').style.animationPlayState = 'paused';
+  document.getElementById('pulse-dot').style.background = '#5C9C50';
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('player-progress-fill').style.width = '100%';
+  document.getElementById('player-line-text').textContent = 'Đã ngâm xong ♪';
+
+  // Mark all done
+  const viewer = document.getElementById('poem-viewer');
+  viewer.querySelectorAll('.poem-line').forEach(el => {
+    el.classList.remove('active');
+    el.classList.add('done');
+  });
+
+  updatePlayerUI('done');
+  document.getElementById('gen-btn').disabled = false;
+  document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♪';
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────────────
+function updatePlayerUI(status) {
+  const btn = document.getElementById('play-pause-btn');
+  const playerSection = document.getElementById('player-section');
+
+  if (status === 'playing') {
+    btn.textContent = '⏸';
+    btn.title = 'Tạm dừng';
+    playerSection.classList.add('visible');
+  } else if (status === 'paused') {
+    btn.textContent = '▶';
+    btn.title = 'Tiếp tục';
+  } else if (status === 'done' || status === 'stopped') {
+    btn.textContent = '▶';
+    btn.title = 'Phát lại';
+  }
+}
+
+// ── BUTTON HANDLERS ────────────────────────────────────────────────────
+function handleGenerate() {
+  const raw = getPoemLines();
+  const lines = raw.filter((l, i) => {
+    // Keep non-empty, and keep one empty line as separator (skip consecutive empties)
+    if (l) return true;
+    if (i === 0) return false;
+    return raw[i - 1] !== '';
+  });
+
+  if (!lines.some(l => l.trim())) {
+    alert('Vui lòng nhập bài thơ trước!');
+    return;
+  }
+
+  // Stop any existing
+  stopAll();
+
+  // Small delay to let browser cancel previous speech
+  setTimeout(() => {
+    state.lines     = lines;
+    state.totalLines= lines.length;
+    state.currentLine = 0;
+
+    buildViewer(lines);
+
+    document.getElementById('progress-section').classList.add('visible');
+    document.getElementById('player-section').classList.add('visible');
+    document.getElementById('pulse-dot').style.animationPlayState = 'running';
+    document.getElementById('pulse-dot').style.background = 'var(--gold)';
+    document.getElementById('status-text').textContent = 'Đang bắt đầu ngâm...';
+    document.getElementById('progress-fill').style.width = '0%';
+
+    document.getElementById('gen-btn').disabled = true;
+    document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♬';
+
+    recite();
+  }, 200);
+}
+
+function togglePlayPause() {
+  if (!state.playing && !state.paused) {
+    // Not started yet or finished — restart
+    handleGenerate();
+    return;
+  }
+
+  if (state.paused) {
+    state.paused = false;
+    updatePlayerUI('playing');
+    window.speechSynthesis.resume();
+  } else {
+    state.paused = true;
+    updatePlayerUI('paused');
+    window.speechSynthesis.pause();
+  }
+}
+
+function stopAll() {
+  state.stopped = true;
+  state.playing = false;
+  state.paused  = false;
+  clearTimeout(state._sleepId);
+  window.speechSynthesis.cancel();
+
+  updatePlayerUI('stopped');
+  document.getElementById('gen-btn').disabled = false;
+  document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♪';
+  document.getElementById('pulse-dot').style.animationPlayState = 'paused';
+}
+
+// Stop if user navigates away
+window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
+</script>
+</body>
+</html>
