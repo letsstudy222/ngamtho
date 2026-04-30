@@ -5,661 +5,482 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ngâm Thơ AI</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Be+Vietnam+Pro:wght@300;400;500&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold:        #A07830;
-    --gold-light:  #C8A050;
-    --gold-faint:  #F5EDD8;
-    --gold-pale:   #FAF5E8;
-    --ink:         #1E1810;
-    --ink-mid:     #4A3D2A;
-    --ink-soft:    #7A6A52;
-    --ink-faint:   #B0A088;
-    --paper:       #FDFAF3;
-    --paper-warm:  #F7F0DF;
-    --paper-border:#E8DFC8;
-    --red-line:    #C0392B;
-    --playing-bg:  #FFF8E6;
-    --radius:      10px;
-    --shadow:      0 2px 16px rgba(100,70,20,0.10);
+    --gold:         #9A7228;
+    --gold-hover:   #7E5C1C;
+    --gold-light:   #C8A050;
+    --gold-faint:   #F5EDD8;
+    --gold-pale:    #FAF5E8;
+    --ink:          #1E1810;
+    --ink-mid:      #4A3D2A;
+    --ink-soft:     #7A6A52;
+    --ink-faint:    #B0A088;
+    --paper:        #FDFAF3;
+    --paper-warm:   #F7F0DF;
+    --paper-border: #E0D4B8;
+    --radius:       10px;
   }
-
-  html { font-size: 16px; }
 
   body {
     background: var(--paper-warm);
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 31px,
-        rgba(160,120,48,0.06) 31px,
-        rgba(160,120,48,0.06) 32px
-      );
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 31px,
+      rgba(160,120,48,0.055) 31px, rgba(160,120,48,0.055) 32px
+    );
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2.5rem 1rem 4rem;
-    color: var(--ink);
     font-family: 'Be Vietnam Pro', sans-serif;
+    color: var(--ink);
   }
 
   /* ── HEADER ── */
-  header {
-    text-align: center;
-    margin-bottom: 2.2rem;
-    position: relative;
-  }
+  header { text-align: center; margin-bottom: 2rem; }
 
-  .header-ornament {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 0.6rem;
+  .header-rule {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-bottom: 8px;
   }
-
-  .header-ornament::before,
-  .header-ornament::after {
-    content: '';
-    display: block;
-    width: 56px;
-    height: 1px;
+  .header-rule::before, .header-rule::after {
+    content: ''; display: block; width: 52px; height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold-light));
   }
-  .header-ornament::after {
-    background: linear-gradient(90deg, var(--gold-light), transparent);
-  }
-
-  .ornament-diamond {
-    width: 8px; height: 8px;
-    background: var(--gold);
-    transform: rotate(45deg);
-    flex-shrink: 0;
-  }
+  .header-rule::after { background: linear-gradient(90deg, var(--gold-light), transparent); }
+  .diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
 
   h1 {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 2.8rem);
-    font-weight: 400;
-    letter-spacing: -0.5px;
-    color: var(--ink);
-    line-height: 1.15;
+    font-size: clamp(1.9rem, 5vw, 2.7rem);
+    font-weight: 400; line-height: 1.15;
   }
+  h1 em { font-style: italic; color: var(--gold); }
+  .subtitle { font-size: 13px; color: var(--ink-soft); margin-top: 6px; letter-spacing: 0.5px; font-weight: 300; }
 
-  h1 em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  .subtitle {
-    font-size: 13px;
-    color: var(--ink-soft);
-    margin-top: 7px;
-    letter-spacing: 0.6px;
-    font-weight: 300;
-  }
-
-  /* ── MAIN CARD ── */
+  /* ── CARD ── */
   .card {
     background: var(--paper);
     border: 1px solid var(--paper-border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 1.6rem 1.8rem;
-    width: 100%;
-    max-width: 680px;
+    box-shadow: 0 2px 18px rgba(100,70,20,0.09);
+    padding: 1.5rem 1.7rem;
+    width: 100%; max-width: 680px;
     margin-bottom: 1rem;
   }
-
-  .card-title {
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 0.9rem;
+  .card-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 1.3px;
+    text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.85rem;
   }
 
-  /* ── POEM INPUT ── */
-  .poem-wrap {
-    position: relative;
-  }
-
+  /* ── TEXTAREA ── */
   #poem-input {
-    width: 100%;
-    min-height: 190px;
-    padding: 14px 16px;
+    width: 100%; min-height: 180px;
+    padding: 13px 15px;
     font-family: 'Playfair Display', serif;
-    font-size: 15.5px;
-    line-height: 2;
+    font-size: 15.5px; line-height: 2.05;
     color: var(--ink);
     background: var(--gold-pale);
     border: 1px solid var(--paper-border);
     border-left: 3px solid var(--gold-light);
-    border-radius: 6px;
-    resize: vertical;
-    outline: none;
+    border-radius: 6px; resize: vertical; outline: none;
     transition: border-color 0.2s;
     caret-color: var(--gold);
   }
-
-  #poem-input:focus {
-    border-color: var(--gold-light);
-    border-left-color: var(--gold);
-    background: #FFFDF6;
-  }
-
+  #poem-input:focus { border-color: var(--gold-light); background: #FFFDF6; }
   #poem-input::placeholder { color: var(--ink-faint); font-style: italic; }
 
-  .poem-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
+  .row-between {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 8px;
   }
-
   .hint { font-size: 11.5px; color: var(--ink-faint); font-style: italic; }
 
   .btn-ghost {
-    background: none;
-    border: 1px solid var(--paper-border);
-    border-radius: 5px;
-    padding: 4px 11px;
-    font-size: 12px;
-    color: var(--ink-soft);
-    cursor: pointer;
+    background: none; border: 1px solid var(--paper-border);
+    border-radius: 5px; padding: 4px 12px;
+    font-size: 12px; color: var(--ink-soft); cursor: pointer;
     font-family: 'Be Vietnam Pro', sans-serif;
-    transition: background 0.15s, color 0.15s;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
   .btn-ghost:hover { background: var(--paper-warm); color: var(--gold); border-color: var(--gold-light); }
 
-  /* ── CONTROLS ── */
-  .controls-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 1rem;
-  }
+  /* ── CONTROLS GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
 
-  @media (max-width: 500px) { .controls-grid { grid-template-columns: 1fr; } }
-
-  .control-group label {
-    display: block;
-    font-size: 11.5px;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-  }
-
-  select, input[type=range] {
-    width: 100%;
-    font-family: 'Be Vietnam Pro', sans-serif;
+  .ctrl label {
+    display: block; font-size: 11.5px; color: var(--ink-soft);
+    margin-bottom: 6px; font-weight: 500; letter-spacing: 0.2px;
   }
 
   select {
-    padding: 8px 32px 8px 11px;
-    font-size: 13.5px;
-    color: var(--ink);
+    width: 100%; padding: 8px 30px 8px 11px;
+    font-size: 13.5px; color: var(--ink);
     background: var(--gold-pale);
-    border: 1px solid var(--paper-border);
-    border-radius: 6px;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23A07830' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
+    border: 1px solid var(--paper-border); border-radius: 6px;
+    outline: none; cursor: pointer; appearance: none;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239A7228' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
     transition: border-color 0.15s;
   }
   select:focus { border-color: var(--gold); }
 
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .slider-row { display: flex; align-items: center; gap: 10px; }
 
   input[type=range] {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 4px;
-    background: var(--paper-border);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
+    flex: 1; -webkit-appearance: none; height: 4px;
+    background: var(--paper-border); border-radius: 2px;
+    outline: none; cursor: pointer;
   }
-
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--gold);
+    -webkit-appearance: none; width: 17px; height: 17px;
+    border-radius: 50%; background: var(--gold);
     border: 2px solid var(--paper);
-    box-shadow: 0 1px 4px rgba(100,70,10,0.3);
+    box-shadow: 0 1px 5px rgba(100,70,10,0.28);
     transition: transform 0.1s;
   }
-  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.18); }
   input[type=range]::-moz-range-thumb {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--gold);
-    border: 2px solid var(--paper);
-    cursor: pointer;
+    width: 17px; height: 17px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--paper); cursor: pointer;
   }
-
-  .slider-val {
-    min-width: 36px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--gold);
-    text-align: right;
-    font-family: 'Be Vietnam Pro', sans-serif;
+  .sval {
+    min-width: 42px; font-size: 12px; font-weight: 500;
+    color: var(--gold); text-align: right; font-family: 'Be Vietnam Pro', sans-serif;
   }
 
   /* ── GENERATE BUTTON ── */
-  .btn-generate {
-    width: 100%;
-    padding: 15px 20px;
-    background: var(--gold);
-    color: #FEF9EC;
-    border: none;
-    border-radius: 8px;
+  #gen-btn {
+    width: 100%; padding: 15px 20px;
+    background: var(--gold); color: #FEF9EC;
+    border: none; border-radius: 8px;
     font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
+    font-size: 16px; letter-spacing: 0.4px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: background 0.2s, transform 0.1s, opacity 0.2s;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
-
-  .btn-generate::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+  #gen-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
     pointer-events: none;
   }
+  #gen-btn:hover:not(:disabled) { background: var(--gold-hover); }
+  #gen-btn:active:not(:disabled) { transform: scale(0.99); }
+  #gen-btn:disabled { opacity: 0.48; cursor: not-allowed; }
+  .btn-icon { font-size: 19px; line-height: 1; transition: transform 0.3s; }
+  #gen-btn:hover:not(:disabled) .btn-icon { transform: scale(1.2) rotate(-6deg); }
 
-  .btn-generate:hover { background: #8A6620; }
-  .btn-generate:active { transform: scale(0.99); }
-  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  /* ── PROGRESS ── */
+  #progress-section { display: none; margin-top: 14px; }
+  #progress-section.show { display: block; }
 
-  .btn-icon {
-    font-size: 18px;
-    line-height: 1;
-    transition: transform 0.3s;
-  }
+  .prog-bar-wrap { height: 3px; background: var(--paper-border); border-radius: 2px; overflow: hidden; margin-bottom: 9px; }
+  .prog-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
 
-  .btn-generate:not(:disabled):hover .btn-icon { transform: scale(1.15) rotate(-5deg); }
+  .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-soft); }
+  .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: blink 1s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.65)} }
 
-  /* ── PROGRESS / STATUS ── */
-  .progress-section {
-    display: none;
-    margin-top: 0;
-  }
-  .progress-section.visible { display: block; }
-
-  .progress-bar-wrap {
-    height: 3px;
-    background: var(--paper-border);
-    border-radius: 2px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    border-radius: 2px;
-    transition: width 0.3s ease;
-    width: 0%;
-  }
-
-  .line-status {
-    font-size: 12px;
-    color: var(--ink-soft);
-    font-family: 'Be Vietnam Pro', sans-serif;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .pulse-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-    animation: pulse-anim 1s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes pulse-anim {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* ── POEM VIEWER (with highlight) ── */
-  .poem-viewer {
-    display: none;
-    background: var(--gold-pale);
-    border: 1px solid var(--paper-border);
-    border-left: 3px solid var(--gold-light);
-    border-radius: 6px;
-    padding: 14px 16px;
-    max-height: 220px;
-    overflow-y: auto;
-    font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    line-height: 2.1;
-    color: var(--ink-mid);
-    margin-top: 12px;
+  /* ── POEM VIEWER ── */
+  #poem-viewer {
+    display: none; margin-top: 12px;
+    background: var(--gold-pale); border: 1px solid var(--paper-border);
+    border-left: 3px solid var(--gold-light); border-radius: 6px;
+    padding: 13px 15px; max-height: 210px; overflow-y: auto;
+    font-family: 'Playfair Display', serif; font-size: 15px; line-height: 2.1;
     scroll-behavior: smooth;
   }
+  #poem-viewer.show { display: block; }
+  #poem-viewer::-webkit-scrollbar { width: 5px; }
+  #poem-viewer::-webkit-scrollbar-thumb { background: var(--paper-border); border-radius: 3px; }
 
-  .poem-viewer.visible { display: block; }
-
-  .poem-line {
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: background 0.3s, color 0.3s;
-    cursor: default;
+  .pline { padding: 1px 7px; border-radius: 4px; transition: background 0.3s, color 0.25s; }
+  .pline.active {
+    background: var(--gold-faint); color: var(--ink); font-weight: 500;
+    border-left: 2px solid var(--gold); padding-left: 10px; margin-left: -3px;
   }
+  .pline.done { color: var(--ink-faint); }
 
-  .poem-line.active {
-    background: var(--gold-faint);
-    color: var(--ink);
-    font-weight: 500;
-    border-left: 2px solid var(--gold);
-    padding-left: 10px;
-    margin-left: -4px;
-  }
+  /* ── PLAYER ── */
+  #player-section { display: none; margin-top: 14px; }
+  #player-section.show { display: flex; align-items: center; gap: 13px; padding: 13px 15px; background: #FFF8E6; border: 1px solid #E8D898; border-radius: 8px; }
 
-  .poem-line.done {
-    color: var(--ink-faint);
+  .ctrl-btn {
+    border: none; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s, transform 0.1s;
   }
+  .ctrl-btn:active { transform: scale(0.91); }
 
-  /* ── AUDIO PLAYER ── */
-  .player-section {
-    display: none;
+  #play-btn {
+    width: 46px; height: 46px; font-size: 16px;
+    background: var(--gold); color: #FEF9EC;
+    box-shadow: 0 2px 8px rgba(160,120,48,0.28);
   }
-  .player-section.visible { display: block; }
+  #play-btn:hover { background: var(--gold-hover); }
 
-  .player-inner {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    background: var(--playing-bg);
-    border: 1px solid #E8D898;
-    border-radius: 8px;
+  #stop-btn {
+    width: 36px; height: 36px; font-size: 11px;
+    background: transparent; color: var(--ink-soft);
+    border: 1px solid var(--paper-border) !important;
   }
+  #stop-btn:hover { background: #FEF0F0; color: #B83030; border-color: #D07070 !important; }
 
-  .play-pause-btn {
-    width: 46px; height: 46px;
-    border-radius: 50%;
-    background: var(--gold);
-    color: #FEF9EC;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    flex-shrink: 0;
-    transition: background 0.15s, transform 0.1s;
-    box-shadow: 0 2px 8px rgba(160,120,48,0.3);
-  }
-  .play-pause-btn:hover { background: #8A6620; }
-  .play-pause-btn:active { transform: scale(0.94); }
+  .player-info { flex: 1; min-width: 0; }
+  .player-tag { font-size: 10.5px; color: var(--ink-faint); letter-spacing: .6px; text-transform: uppercase; font-weight: 500; margin-bottom: 4px; }
+  .player-line { font-family: 'Playfair Display', serif; font-size: 14px; font-style: italic; color: var(--ink-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini-prog { height: 3px; background: var(--paper-border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .mini-prog-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; transition: width 0.4s; }
 
-  .stop-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: transparent;
-    border: 1px solid var(--paper-border);
-    color: var(--ink-soft);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    flex-shrink: 0;
-    transition: background 0.15s, color 0.15s;
-  }
-  .stop-btn:hover { background: var(--paper-warm); color: var(--red-line); border-color: var(--red-line); }
+  .player-count { font-size: 11px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0; font-family: 'Be Vietnam Pro', sans-serif; }
 
-  .player-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .player-label {
-    font-size: 11px;
-    color: var(--ink-faint);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-weight: 500;
-    margin-bottom: 4px;
-  }
-
-  .player-line-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 14px;
-    font-style: italic;
-    color: var(--ink-mid);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .player-progress-wrap {
-    height: 3px;
-    background: var(--paper-border);
-    border-radius: 2px;
-    margin-top: 8px;
-    overflow: hidden;
-  }
-
-  .player-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-
-  .player-count {
-    font-size: 11px;
-    color: var(--ink-faint);
-    white-space: nowrap;
-    flex-shrink: 0;
-    font-family: 'Be Vietnam Pro', sans-serif;
-  }
-
-  /* ── NO VOICE WARNING ── */
-  .warning-box {
-    display: none;
-    padding: 11px 14px;
-    background: #FEF8E6;
-    border: 1px solid #E8C870;
-    border-radius: 6px;
-    font-size: 12.5px;
-    color: #7A5C10;
-    line-height: 1.6;
-    margin-top: 10px;
-  }
-  .warning-box.visible { display: block; }
+  /* ── WARNING ── */
+  .warn { display: none; padding: 10px 13px; background: #FEF8E6; border: 1px solid #E0C060; border-radius: 6px; font-size: 12px; color: #7A5C10; line-height: 1.65; margin-top: 10px; }
+  .warn.show { display: block; }
 
   /* ── FOOTER ── */
-  footer {
-    margin-top: 2.5rem;
-    text-align: center;
-    font-size: 11.5px;
-    color: var(--ink-faint);
-    letter-spacing: 0.3px;
-  }
-
-  footer .dots { letter-spacing: 4px; display: block; margin-bottom: 4px; color: var(--gold-light); }
-
-  /* ── SCROLLBAR ── */
-  .poem-viewer::-webkit-scrollbar { width: 5px; }
-  .poem-viewer::-webkit-scrollbar-track { background: transparent; }
-  .poem-viewer::-webkit-scrollbar-thumb { background: var(--paper-border); border-radius: 3px; }
+  footer { margin-top: 2.5rem; text-align: center; font-size: 11.5px; color: var(--ink-faint); }
+  footer .dots { display: block; letter-spacing: 5px; color: var(--gold-light); margin-bottom: 4px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-ornament">
-    <div class="ornament-diamond"></div>
-  </div>
+  <div class="header-rule"><div class="diamond"></div></div>
   <h1>Ngâm Thơ <em>AI</em></h1>
   <p class="subtitle">Chuyển thơ Việt thành tiếng ngâm cổ điển — ngay trên trình duyệt</p>
 </header>
 
-<!-- ── POEM INPUT ── -->
+<!-- BÀI THƠ -->
 <div class="card">
-  <div class="card-title">Bài thơ</div>
-  <div class="poem-wrap">
-    <textarea id="poem-input" rows="8"
-      placeholder="Dán bài thơ vào đây...&#10;&#10;Ví dụ: Đêm qua ra đứng bờ ao&#10;Trông cá cá lặn, trông sao sao mờ..."></textarea>
-  </div>
-  <div class="poem-actions">
-    <span class="hint" id="line-count-hint">0 dòng</span>
-    <div style="display:flex;gap:8px;">
+  <div class="card-label">Bài thơ</div>
+  <textarea id="poem-input" rows="8"
+    placeholder="Dán bài thơ vào đây...&#10;&#10;Ví dụ:&#10;Đêm qua ra đứng bờ ao&#10;Trông cá cá lặn, trông sao sao mờ..."></textarea>
+  <div class="row-between">
+    <span class="hint" id="lc">0 dòng</span>
+    <div style="display:flex;gap:8px">
       <button class="btn-ghost" onclick="loadSample()">Thơ mẫu</button>
       <button class="btn-ghost" onclick="clearPoem()">Xoá</button>
     </div>
   </div>
 </div>
 
-<!-- ── SETTINGS ── -->
+<!-- CÀI ĐẶT -->
 <div class="card">
-  <div class="card-title">Tuỳ chỉnh giọng ngâm</div>
-  <div class="controls-grid">
-    <div class="control-group">
-      <label for="voice-gender">Giọng đọc</label>
-      <select id="voice-gender">
-        <option value="female">Nữ (ưu tiên)</option>
-        <option value="male">Nam (ưu tiên)</option>
+  <div class="card-label">Tuỳ chỉnh giọng ngâm</div>
+  <div class="grid-2" style="margin-bottom:12px">
+    <div class="ctrl">
+      <label for="gender-sel">Giọng ưu tiên</label>
+      <select id="gender-sel">
+        <option value="female">Nữ</option>
+        <option value="male">Nam</option>
       </select>
     </div>
-    <div class="control-group">
-      <label for="voice-select">Chọn giọng cụ thể</label>
-      <select id="voice-select">
-        <option value="">Đang tải giọng...</option>
-      </select>
+    <div class="ctrl">
+      <label for="voice-sel">Giọng cụ thể</label>
+      <select id="voice-sel"><option value="">Đang tải...</option></select>
     </div>
-    <div class="control-group">
+    <div class="ctrl">
       <label>Tốc độ ngâm</label>
       <div class="slider-row">
-        <input type="range" id="rate-slider" min="0.3" max="0.9" step="0.05" value="0.55">
-        <span class="slider-val" id="rate-val">0.55×</span>
+        <input type="range" id="s-rate"   min="0.3" max="0.85" step="0.05" value="0.55">
+        <span class="sval" id="v-rate">0.55×</span>
       </div>
     </div>
-    <div class="control-group">
-      <label>Ngắt nghỉ giữa câu (ms)</label>
+    <div class="ctrl">
+      <label>Ngắt nghỉ (ms)</label>
       <div class="slider-row">
-        <input type="range" id="pause-slider" min="300" max="2000" step="100" value="900">
-        <span class="slider-val" id="pause-val">900ms</span>
+        <input type="range" id="s-pause"  min="300" max="2500" step="100" value="1000">
+        <span class="sval" id="v-pause">1000ms</span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="ctrl">
       <label>Cao độ giọng</label>
       <div class="slider-row">
-        <input type="range" id="pitch-slider" min="0.7" max="1.4" step="0.05" value="1.1">
-        <span class="slider-val" id="pitch-val">1.10</span>
+        <input type="range" id="s-pitch"  min="0.6" max="1.5" step="0.05" value="1.1">
+        <span class="sval" id="v-pitch">1.10</span>
       </div>
     </div>
-    <div class="control-group">
-      <label>Hiệu ứng vibrato</label>
+    <div class="ctrl">
+      <label>Vibrato</label>
       <div class="slider-row">
-        <input type="range" id="vibrato-slider" min="0" max="4" step="1" value="2">
-        <span class="slider-val" id="vibrato-val">Vừa</span>
+        <input type="range" id="s-vib"    min="0" max="4" step="1" value="2">
+        <span class="sval" id="v-vib">Vừa</span>
       </div>
     </div>
   </div>
 
-  <div class="warning-box" id="warning-box">
-    ⚠ Trình duyệt không tìm thấy giọng tiếng Việt. Sẽ dùng giọng mặc định — chất lượng ngâm có thể thấp hơn.
-    Khuyến nghị: dùng Chrome hoặc Edge, và cài thêm giọng tiếng Việt trong cài đặt hệ điều hành.
+  <div class="warn" id="warn-no-vi">
+    ⚠ Không tìm thấy giọng tiếng Việt. Sẽ dùng giọng mặc định — khuyến nghị Chrome/Edge
+    và cài thêm giọng tiếng Việt trong cài đặt hệ điều hành (Windows: Settings → Time &amp; Language → Speech).
   </div>
 </div>
 
-<!-- ── GENERATE + PLAYER ── -->
+<!-- NÚT + PLAYER -->
 <div class="card">
-  <button class="btn-generate" id="gen-btn" onclick="handleGenerate()">
-    <span class="btn-icon">♪</span>
-    Tạo bản ngâm thơ
+  <button id="gen-btn" onclick="handleGenerate()">
+    <span class="btn-icon" id="btn-icon">♪</span>
+    <span id="btn-label">Tạo bản ngâm thơ</span>
   </button>
 
-  <!-- Progress -->
-  <div class="progress-section" id="progress-section">
-    <div style="height:14px;"></div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progress-fill"></div>
-    </div>
-    <div class="line-status">
-      <div class="pulse-dot" id="pulse-dot"></div>
-      <span id="status-text">Đang chuẩn bị...</span>
-    </div>
+  <div id="progress-section">
+    <div class="prog-bar-wrap"><div class="prog-bar-fill" id="prog-fill"></div></div>
+    <div class="status-row"><div class="pulse" id="pulse"></div><span id="status-txt">Chuẩn bị...</span></div>
   </div>
 
-  <!-- Poem viewer with highlight -->
-  <div class="poem-viewer" id="poem-viewer"></div>
+  <div id="poem-viewer"></div>
 
-  <!-- Audio player UI -->
-  <div class="player-section" id="player-section">
-    <div style="height:14px;"></div>
-    <div class="player-inner">
-      <button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()" title="Phát / Tạm dừng">
-        ▶
-      </button>
-      <button class="stop-btn" onclick="stopAll()" title="Dừng hẳn">■</button>
-      <div class="player-info">
-        <div class="player-label">Đang ngâm</div>
-        <div class="player-line-text" id="player-line-text">—</div>
-        <div class="player-progress-wrap">
-          <div class="player-progress-fill" id="player-progress-fill" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="player-count" id="player-count">0 / 0</div>
+  <div id="player-section">
+    <button class="ctrl-btn" id="play-btn"  onclick="onPlayPause()" title="Phát / Tạm dừng">▶</button>
+    <button class="ctrl-btn" id="stop-btn"  onclick="onStop()"      title="Dừng">■</button>
+    <div class="player-info">
+      <div class="player-tag">Đang ngâm</div>
+      <div class="player-line" id="player-line">—</div>
+      <div class="mini-prog"><div class="mini-prog-fill" id="mini-fill" style="width:0%"></div></div>
     </div>
+    <div class="player-count" id="player-count">0 / 0</div>
   </div>
 </div>
 
 <footer>
   <span class="dots">· · ·</span>
-  Sử dụng Web Speech API · Không cần backend · Chạy hoàn toàn trên trình duyệt
+  Web Speech API · Không cần backend · Chạy trên trình duyệt
 </footer>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────
-const state = {
-  voices: [],
-  viVoices: [],
-  lines: [],
-  currentLine: 0,
-  totalLines: 0,
-  playing: false,
-  paused: false,
-  stopped: false,
-  pauseResolve: null,
+/* ================================================================
+   NGÂM THƠ AI — fixed & production-ready
+   Các bug đã fix:
+   1. getVoices() race condition → polling + onvoiceschanged
+   2. Chrome 15s utterance freeze → mỗi câu = 1 utterance riêng
+   3. pause/resume không hoạt động mobile → dùng cancel + resume từ dòng hiện tại
+   4. speak() ngay sau cancel() bị drop → waitForIdle() sau cancel
+   5. Voice index sai khi lọc mảng con → lưu object voice trực tiếp
+   6. Hàng đợi chồng chéo → cờ `busy` + abort controller
+================================================================ */
+
+// ── STATE ──────────────────────────────────────────────────────
+const S = {
+  allVoices:  [],          // tất cả giọng từ getVoices()
+  viVoices:   [],          // giọng tiếng Việt
+  selectedVoice: null,     // SpeechSynthesisVoice object
+
+  lines:      [],          // mảng dòng thơ đã tách
+  curLine:    0,           // dòng đang đọc
+  busy:       false,       // đang chạy?
+  paused:     false,       // đang tạm dừng?
+  aborted:    false,       // yêu cầu dừng hẳn?
+
+  // Chrome keep-alive: cần gọi synth.pause()/resume() mỗi ~10s để tránh bị kill
+  keepAliveTimer: null,
 };
 
-const VIBRATO_LABELS = ['Tắt', 'Nhẹ', 'Vừa', 'Nhiều', 'Mạnh'];
+const VIB_LABELS = ['Tắt', 'Nhẹ', 'Vừa', 'Nhiều', 'Mạnh'];
 
-// ── SAMPLE POEMS ──────────────────────────────────────────────────────
+// ── KHỞI ĐỘNG ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  initVoices();
+  setupSliders();
+  document.getElementById('poem-input').addEventListener('input', updateLineCount);
+  document.getElementById('gender-sel').addEventListener('change', autoSelectVoice);
+  loadSample();
+});
+
+// ── VOICE LOADING (fix race condition) ─────────────────────────
+function initVoices() {
+  // Thử lấy ngay
+  populateVoices(window.speechSynthesis.getVoices());
+
+  // Lắng nghe sự kiện thay đổi (Chrome kích hoạt sau vài ms)
+  window.speechSynthesis.onvoiceschanged = () => {
+    populateVoices(window.speechSynthesis.getVoices());
+  };
+
+  // Fallback polling cho một số trình duyệt không fire onvoiceschanged
+  let attempts = 0;
+  const poll = setInterval(() => {
+    const v = window.speechSynthesis.getVoices();
+    if (v.length > 0 || ++attempts > 20) {
+      clearInterval(poll);
+      if (v.length > 0) populateVoices(v);
+    }
+  }, 250);
+}
+
+function populateVoices(all) {
+  if (!all || all.length === 0) return;
+  S.allVoices = all;
+
+  // Tìm giọng Việt: ưu tiên lang vi, fallback tên chứa "viet"/"vi-"
+  S.viVoices = all.filter(v =>
+    v.lang.toLowerCase().startsWith('vi') ||
+    v.name.toLowerCase().includes('viet') ||
+    v.name.toLowerCase().includes('vi-vn')
+  );
+
+  const hasVI = S.viVoices.length > 0;
+  document.getElementById('warn-no-vi').classList.toggle('show', !hasVI);
+
+  // Điền dropdown
+  const pool = hasVI ? S.viVoices : all;
+  const sel  = document.getElementById('voice-sel');
+  sel.innerHTML = '';
+  pool.forEach((v, i) => {
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(o);
+  });
+
+  autoSelectVoice();
+}
+
+function autoSelectVoice() {
+  const gender = document.getElementById('gender-sel').value;
+  const pool   = S.viVoices.length ? S.viVoices : S.allVoices;
+  if (!pool.length) return;
+
+  const femaleKw = ['female','woman','girl','nữ','hoai','thu','lan','mai','linh','ha','oanh'];
+  const maleKw   = ['male','man','boy','nam','minh','hung','quang','tuan','long','duc'];
+  const kw = gender === 'female' ? femaleKw : maleKw;
+
+  let idx = pool.findIndex(v => kw.some(k => v.name.toLowerCase().includes(k)));
+  if (idx < 0) idx = 0;
+
+  document.getElementById('voice-sel').selectedIndex = idx;
+  S.selectedVoice = pool[idx];
+}
+
+// Khi user thay dropdown thủ công
+document.getElementById('voice-sel').addEventListener('change', function() {
+  const pool = S.viVoices.length ? S.viVoices : S.allVoices;
+  S.selectedVoice = pool[parseInt(this.value)] || null;
+});
+
+// ── SLIDERS ────────────────────────────────────────────────────
+function setupSliders() {
+  const bind = (id, outId, fmt) => {
+    const el = document.getElementById(id);
+    const out = document.getElementById(outId);
+    const update = () => { out.textContent = fmt(el.value); };
+    el.addEventListener('input', update);
+    update();
+  };
+  bind('s-rate',  'v-rate',  v => parseFloat(v).toFixed(2) + '×');
+  bind('s-pause', 'v-pause', v => v + 'ms');
+  bind('s-pitch', 'v-pitch', v => parseFloat(v).toFixed(2));
+  bind('s-vib',   'v-vib',   v => VIB_LABELS[+v]);
+}
+
+// ── POEM HELPERS ───────────────────────────────────────────────
 const SAMPLES = [
 `Đêm qua ra đứng bờ ao
 Trông cá cá lặn, trông sao sao mờ
@@ -668,392 +489,354 @@ Nhện ơi nhện hỡi, nhện chờ mối ai
 Buồn trông chênh chếch sao mai
 Sao ơi sao hỡi, nhớ ai sao mờ`,
 
+`Công cha như núi Thái Sơn
+Nghĩa mẹ như nước trong nguồn chảy ra
+Một lòng thờ mẹ kính cha
+Cho tròn chữ hiếu mới là đạo con`,
+
 `Thân em như tấm lụa đào
 Phất phơ giữa chợ biết vào tay ai
 
 Thân em như củ ấu gai
 Ruột trong thì trắng, vỏ ngoài thì đen`,
-
-`Công cha như núi Thái Sơn
-Nghĩa mẹ như nước trong nguồn chảy ra
-Một lòng thờ mẹ kính cha
-Cho tròn chữ hiếu mới là đạo con`,
 ];
-
 let sampleIdx = 0;
 
-// ── INIT ───────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = loadVoices;
-  setupSliders();
-  setupTextarea();
-  loadSample();
-});
-
-function loadVoices() {
-  const all = window.speechSynthesis.getVoices();
-  if (!all.length) return;
-  state.voices = all;
-
-  // Tìm giọng tiếng Việt
-  state.viVoices = all.filter(v =>
-    v.lang.startsWith('vi') || v.name.toLowerCase().includes('viet') || v.name.toLowerCase().includes('vi-')
-  );
-
-  const haVI = state.viVoices.length > 0;
-  document.getElementById('warning-box').classList.toggle('visible', !haVI);
-
-  const pool = haVI ? state.viVoices : all;
-  populateVoiceSelect(pool);
-  autoSelectVoice();
-}
-
-function populateVoiceSelect(pool) {
-  const sel = document.getElementById('voice-select');
-  sel.innerHTML = '';
-  pool.forEach((v, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${v.name} (${v.lang})`;
-    sel.appendChild(opt);
-  });
-}
-
-function autoSelectVoice() {
-  const gender = document.getElementById('voice-gender').value;
-  const pool = state.viVoices.length ? state.viVoices : state.voices;
-  const genderKw = gender === 'female'
-    ? ['female','woman','girl','nữ','hoai','lan','thu','mai','linh']
-    : ['male','man','boy','nam','minh','hung','quang','tuan'];
-
-  let idx = pool.findIndex(v =>
-    genderKw.some(k => v.name.toLowerCase().includes(k))
-  );
-  if (idx < 0) idx = 0;
-
-  const sel = document.getElementById('voice-select');
-  if (sel.options[idx]) sel.selectedIndex = idx;
-}
-
-document.getElementById('voice-gender').addEventListener('change', autoSelectVoice);
-
-function setupSliders() {
-  const bind = (id, outId, fmt) => {
-    const el = document.getElementById(id);
-    const out = document.getElementById(outId);
-    el.addEventListener('input', () => { out.textContent = fmt(el.value); });
-    out.textContent = fmt(el.value);
-  };
-  bind('rate-slider',    'rate-val',    v => parseFloat(v).toFixed(2) + '×');
-  bind('pause-slider',   'pause-val',   v => v + 'ms');
-  bind('pitch-slider',   'pitch-val',   v => parseFloat(v).toFixed(2));
-  bind('vibrato-slider', 'vibrato-val', v => VIBRATO_LABELS[+v]);
-}
-
-function setupTextarea() {
-  const ta = document.getElementById('poem-input');
-  ta.addEventListener('input', updateLineCount);
-}
-
-function updateLineCount() {
-  const lines = getPoemLines();
-  document.getElementById('line-count-hint').textContent = lines.length + ' dòng';
-}
-
-function getPoemLines() {
-  return document.getElementById('poem-input').value
-    .split('\n')
-    .map(l => l.trim());
-}
-
 function loadSample() {
-  document.getElementById('poem-input').value = SAMPLES[sampleIdx % SAMPLES.length];
-  sampleIdx++;
+  document.getElementById('poem-input').value = SAMPLES[sampleIdx++ % SAMPLES.length];
   updateLineCount();
 }
 
 function clearPoem() {
+  onStop();
   document.getElementById('poem-input').value = '';
   updateLineCount();
-  stopAll();
 }
 
-// ── BUILD POEM VIEWER ─────────────────────────────────────────────────
+function updateLineCount() {
+  const n = getLines().length;
+  document.getElementById('lc').textContent = n + ' dòng';
+}
+
+function getLines() {
+  // Giữ dòng trống như ngắt đoạn, loại bỏ 2+ dòng trống liên tiếp
+  const raw = document.getElementById('poem-input').value.split('\n');
+  const out = [];
+  let prevEmpty = false;
+  for (const l of raw) {
+    const t = l.trim();
+    if (!t) {
+      if (!prevEmpty) out.push('');
+      prevEmpty = true;
+    } else {
+      out.push(t);
+      prevEmpty = false;
+    }
+  }
+  // Bỏ dòng trống đầu/cuối
+  while (out.length && out[0]   === '') out.shift();
+  while (out.length && out[out.length-1] === '') out.pop();
+  return out;
+}
+
+// ── POEM VIEWER ────────────────────────────────────────────────
 function buildViewer(lines) {
-  const viewer = document.getElementById('poem-viewer');
-  viewer.innerHTML = '';
+  const v = document.getElementById('poem-viewer');
+  v.innerHTML = '';
   lines.forEach((line, i) => {
-    const div = document.createElement('div');
-    div.className = 'poem-line';
-    div.id = 'pline-' + i;
-    div.textContent = line || '\u00A0';
-    viewer.appendChild(div);
+    const d = document.createElement('div');
+    d.className = 'pline';
+    d.id = 'pl-' + i;
+    d.textContent = line || '\u00A0'; // nbsp cho dòng trống
+    v.appendChild(d);
   });
-  viewer.classList.add('visible');
+  v.classList.add('show');
 }
 
 function highlightLine(idx, total) {
   const viewer = document.getElementById('poem-viewer');
-  // reset all
-  viewer.querySelectorAll('.poem-line').forEach((el, i) => {
+  viewer.querySelectorAll('.pline').forEach((el, i) => {
     el.classList.remove('active');
-    if (i < idx) el.classList.add('done');
-    else el.classList.remove('done');
+    el.classList.toggle('done', i < idx);
   });
-
-  const active = document.getElementById('pline-' + idx);
+  const active = document.getElementById('pl-' + idx);
   if (active) {
     active.classList.add('active');
     active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  // Player UI
-  const lineText = state.lines[idx] || '';
-  document.getElementById('player-line-text').textContent = lineText || '(ngắt nghỉ)';
+  const pct = total > 1 ? Math.round((idx / (total - 1)) * 100) : 100;
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('mini-fill').style.width  = pct + '%';
   document.getElementById('player-count').textContent = (idx + 1) + ' / ' + total;
-  document.getElementById('player-progress-fill').style.width =
-    Math.round(((idx) / Math.max(total - 1, 1)) * 100) + '%';
-
-  // Top progress
-  document.getElementById('progress-fill').style.width =
-    Math.round(((idx) / Math.max(total - 1, 1)) * 100) + '%';
-  document.getElementById('status-text').textContent =
-    `Đang ngâm dòng ${idx + 1} / ${total}: "${lineText}"`;
+  document.getElementById('player-line').textContent  = S.lines[idx] || '(ngắt đoạn)';
+  document.getElementById('status-txt').textContent   =
+    `Dòng ${idx + 1}/${total}: "${S.lines[idx] || '...'}"`;
 }
 
-// ── SPEECH ENGINE ──────────────────────────────────────────────────────
-function getSelectedVoice() {
-  const pool = state.viVoices.length ? state.viVoices : state.voices;
-  const idx = parseInt(document.getElementById('voice-select').value) || 0;
-  return pool[idx] || null;
-}
-
-function speak(text, rate, pitch) {
-  return new Promise((resolve) => {
-    if (state.stopped) { resolve(); return; }
+// ── SPEECH ENGINE ───────────────────────────────────────────────
+// FIX: Wrap mỗi utterance trong Promise dùng onend/onerror
+// FIX: Chrome freeze — utterance tối đa ~14 giây → mỗi câu thơ = 1 utterance riêng
+function speakUtterance(text, rate, pitch) {
+  return new Promise(resolve => {
+    if (S.aborted) { resolve(); return; }
 
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate  = rate;
-    utt.pitch = pitch;
+    utt.rate   = Math.max(0.1, Math.min(10, rate));
+    utt.pitch  = Math.max(0,   Math.min(2,  pitch));
     utt.volume = 1;
 
-    const voice = getSelectedVoice();
-    if (voice) utt.voice = voice;
-    if (voice) utt.lang = voice.lang;
-    else utt.lang = 'vi-VN';
+    // FIX: Gán voice object trực tiếp, không dùng index
+    const voice = S.selectedVoice ||
+      (S.viVoices.length ? S.viVoices[0] : (S.allVoices[0] || null));
+    if (voice) {
+      utt.voice = voice;
+      utt.lang  = voice.lang;
+    } else {
+      utt.lang = 'vi-VN';
+    }
 
-    utt.onend = resolve;
-    utt.onerror = resolve;
+    utt.onend   = () => resolve();
+    utt.onerror = (e) => {
+      // 'interrupted' xảy ra khi cancel() → không phải lỗi thật
+      if (e.error !== 'interrupted') console.warn('SpeechSynthesis error:', e.error);
+      resolve();
+    };
 
     window.speechSynthesis.speak(utt);
   });
 }
 
-function sleep(ms) {
+// FIX: Chrome keep-alive — gọi pause()/resume() mỗi 10s để tránh engine bị kill
+function startKeepAlive() {
+  stopKeepAlive();
+  S.keepAliveTimer = setInterval(() => {
+    if (!S.busy || S.paused || S.aborted) return;
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      setTimeout(() => {
+        if (!S.paused && !S.aborted) window.speechSynthesis.resume();
+      }, 50);
+    }
+  }, 10000);
+}
+
+function stopKeepAlive() {
+  if (S.keepAliveTimer) { clearInterval(S.keepAliveTimer); S.keepAliveTimer = null; }
+}
+
+// FIX: Đợi engine thực sự rảnh sau cancel() (Chrome cần ~50–100ms)
+function waitForIdle() {
   return new Promise(resolve => {
-    if (state.stopped) { resolve(); return; }
-    const id = setTimeout(resolve, ms);
-    // Store so we can cancel
-    state._sleepId = id;
+    const check = () => {
+      if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+        resolve();
+      } else {
+        setTimeout(check, 60);
+      }
+    };
+    setTimeout(check, 60); // delay tối thiểu
   });
 }
 
-// Vibrato: split a line into syllable chunks and vary pitch slightly
-function splitVibratoChunks(line, level) {
-  if (level === 0) return [[line, 0]]; // [text, pitchDelta]
-  // Split by spaces into words
+// ── Vibrato: chia câu thành cụm từ, pitch dao động nhẹ ─────────
+function vibratoChunks(line, level) {
+  if (level === 0 || !line) return [[line, 0]];
   const words = line.split(/\s+/).filter(Boolean);
-  if (words.length <= 1) return [[line, 0]];
+  if (words.length <= 2) return [[line, 0]];
 
-  const swingMap = [0, 0.04, 0.07, 0.10, 0.14];
-  const swing = swingMap[level] || 0;
-
-  // Group into pairs of 1-2 words per chunk
-  const chunks = [];
+  const swings = [0, 0.04, 0.07, 0.11, 0.16];
+  const swing  = swings[Math.min(level, 4)];
+  const result = [];
   for (let i = 0; i < words.length; i += 2) {
     const chunk = words.slice(i, i + 2).join(' ');
-    const delta = (i % 4 < 2) ? swing : -swing * 0.6;
-    chunks.push([chunk, delta]);
+    const delta = (Math.floor(i / 2) % 2 === 0) ? swing : -swing * 0.7;
+    result.push([chunk, delta]);
   }
-  return chunks;
+  return result;
 }
 
-// ── MAIN RECITATION LOOP ───────────────────────────────────────────────
-async function recite() {
-  const rate     = parseFloat(document.getElementById('rate-slider').value);
-  const pauseMs  = parseInt(document.getElementById('pause-slider').value);
-  const pitch    = parseFloat(document.getElementById('pitch-slider').value);
-  const vibrato  = parseInt(document.getElementById('vibrato-slider').value);
+// ── Ngủ có thể bị hủy bởi abort ────────────────────────────────
+function sleepMs(ms) {
+  return new Promise(resolve => {
+    if (S.aborted) { resolve(); return; }
+    const id = setTimeout(resolve, ms);
+    // Gắn id để có thể cancel nếu cần (không bắt buộc vì aborted check ở đầu vòng lặp)
+    S._sleepId = id;
+  });
+}
 
-  const lines    = state.lines;
-  const total    = lines.length;
+// ── VÒNG LẶP NGÂM THƠ CHÍNH ────────────────────────────────────
+async function reciteLoop(startFrom = 0) {
+  const rate    = parseFloat(document.getElementById('s-rate').value);
+  const pauseMs = parseInt(document.getElementById('s-pause').value);
+  const pitch   = parseFloat(document.getElementById('s-pitch').value);
+  const vibLv   = parseInt(document.getElementById('s-vib').value);
+  const lines   = S.lines;
+  const total   = lines.length;
 
-  state.playing = true;
-  state.paused  = false;
-  state.stopped = false;
+  S.busy    = true;
+  S.paused  = false;
+  S.aborted = false;
 
-  updatePlayerUI('playing');
+  startKeepAlive();
+  setUI('playing');
 
-  for (let i = 0; i < total; i++) {
-    if (state.stopped) break;
+  for (let i = startFrom; i < total; i++) {
+    if (S.aborted) break;
 
-    // Handle pause
-    while (state.paused && !state.stopped) {
-      await sleep(100);
-    }
-    if (state.stopped) break;
+    // Tạm dừng: chờ đến khi resume
+    while (S.paused && !S.aborted) await sleepMs(80);
+    if (S.aborted) break;
 
-    state.currentLine = i;
+    S.curLine = i;
     highlightLine(i, total);
 
     const line = lines[i];
 
     if (!line) {
-      // Empty line = longer pause
-      await sleep(pauseMs * 1.5);
+      // Dòng trống = ngắt đoạn dài
+      await sleepMs(pauseMs * 1.6);
       continue;
     }
 
-    const chunks = splitVibratoChunks(line, vibrato);
-
+    // Chia vibrato chunks và đọc từng chunk
+    const chunks = vibratoChunks(line, vibLv);
     for (const [chunk, pitchDelta] of chunks) {
-      if (state.stopped) break;
-      while (state.paused && !state.stopped) { await sleep(80); }
-      if (state.stopped) break;
+      if (S.aborted) break;
+      while (S.paused && !S.aborted) await sleepMs(80);
+      if (S.aborted) break;
 
-      const finalPitch = Math.max(0.1, Math.min(2, pitch + pitchDelta));
-      await speak(chunk, rate, finalPitch);
+      await speakUtterance(chunk, rate, pitch + pitchDelta);
 
-      // tiny gap between chunks
-      if (chunks.length > 1) await sleep(60);
+      // Khoảng nghỉ nhỏ giữa các chunk trong cùng một câu
+      if (chunks.length > 1 && !S.aborted) await sleepMs(80);
     }
 
-    // Pause after line
-    if (i < total - 1 && !state.stopped) {
-      await sleep(pauseMs);
-    }
+    // Nghỉ giữa các câu thơ
+    if (i < total - 1 && !S.aborted) await sleepMs(pauseMs);
   }
 
-  if (!state.stopped) {
-    // Done
-    finishRecitation();
+  stopKeepAlive();
+  S.busy = false;
+
+  if (!S.aborted) {
+    onFinished();
   }
 }
 
-function finishRecitation() {
-  state.playing = false;
-  state.paused  = false;
+// ── KẾT THÚC ───────────────────────────────────────────────────
+function onFinished() {
+  S.busy = false; S.paused = false;
 
-  document.getElementById('status-text').textContent = 'Hoàn thành ✓';
-  document.getElementById('pulse-dot').style.animationPlayState = 'paused';
-  document.getElementById('pulse-dot').style.background = '#5C9C50';
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('player-progress-fill').style.width = '100%';
-  document.getElementById('player-line-text').textContent = 'Đã ngâm xong ♪';
+  document.getElementById('status-txt').textContent = '✓ Đã ngâm xong';
+  document.getElementById('pulse').style.animation  = 'none';
+  document.getElementById('pulse').style.background = '#5A9A50';
+  document.getElementById('prog-fill').style.width  = '100%';
+  document.getElementById('mini-fill').style.width  = '100%';
+  document.getElementById('player-line').textContent = 'Đã ngâm xong ♪';
 
-  // Mark all done
-  const viewer = document.getElementById('poem-viewer');
-  viewer.querySelectorAll('.poem-line').forEach(el => {
-    el.classList.remove('active');
-    el.classList.add('done');
+  document.getElementById('poem-viewer').querySelectorAll('.pline').forEach(el => {
+    el.classList.remove('active'); el.classList.add('done');
   });
 
-  updatePlayerUI('done');
+  setUI('done');
   document.getElementById('gen-btn').disabled = false;
-  document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♪';
 }
 
-// ── UI HELPERS ─────────────────────────────────────────────────────────
-function updatePlayerUI(status) {
-  const btn = document.getElementById('play-pause-btn');
-  const playerSection = document.getElementById('player-section');
-
-  if (status === 'playing') {
-    btn.textContent = '⏸';
-    btn.title = 'Tạm dừng';
-    playerSection.classList.add('visible');
-  } else if (status === 'paused') {
-    btn.textContent = '▶';
-    btn.title = 'Tiếp tục';
-  } else if (status === 'done' || status === 'stopped') {
-    btn.textContent = '▶';
-    btn.title = 'Phát lại';
-  }
-}
-
-// ── BUTTON HANDLERS ────────────────────────────────────────────────────
+// ── BUTTON HANDLERS ─────────────────────────────────────────────
 function handleGenerate() {
-  const raw = getPoemLines();
-  const lines = raw.filter((l, i) => {
-    // Keep non-empty, and keep one empty line as separator (skip consecutive empties)
-    if (l) return true;
-    if (i === 0) return false;
-    return raw[i - 1] !== '';
-  });
+  const lines = getLines();
+  if (!lines.some(l => l)) { alert('Vui lòng nhập bài thơ trước!'); return; }
 
-  if (!lines.some(l => l.trim())) {
-    alert('Vui lòng nhập bài thơ trước!');
-    return;
-  }
-
-  // Stop any existing
-  stopAll();
-
-  // Small delay to let browser cancel previous speech
-  setTimeout(() => {
-    state.lines     = lines;
-    state.totalLines= lines.length;
-    state.currentLine = 0;
-
-    buildViewer(lines);
-
-    document.getElementById('progress-section').classList.add('visible');
-    document.getElementById('player-section').classList.add('visible');
-    document.getElementById('pulse-dot').style.animationPlayState = 'running';
-    document.getElementById('pulse-dot').style.background = 'var(--gold)';
-    document.getElementById('status-text').textContent = 'Đang bắt đầu ngâm...';
-    document.getElementById('progress-fill').style.width = '0%';
-
-    document.getElementById('gen-btn').disabled = true;
-    document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♬';
-
-    recite();
-  }, 200);
+  // Nếu đang chạy → dừng hẳn rồi chạy lại
+  abortAndRun(lines);
 }
 
-function togglePlayPause() {
-  if (!state.playing && !state.paused) {
-    // Not started yet or finished — restart
+async function abortAndRun(lines) {
+  // 1. Hủy phát đang chạy
+  S.aborted = true;
+  S.paused  = false;
+  stopKeepAlive();
+  window.speechSynthesis.cancel();
+
+  // 2. FIX: Đợi engine thực sự rảnh trước khi speak mới
+  await waitForIdle();
+
+  // 3. Reset state
+  S.lines   = lines;
+  S.curLine = 0;
+  S.aborted = false;
+
+  // 4. Build UI
+  buildViewer(lines);
+  document.getElementById('progress-section').classList.add('show');
+  document.getElementById('player-section').classList.add('show');
+  document.getElementById('pulse').style.animation  = '';
+  document.getElementById('pulse').style.background = '';
+  document.getElementById('status-txt').textContent = 'Đang bắt đầu...';
+  document.getElementById('prog-fill').style.width  = '0%';
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('btn-icon').textContent = '♬';
+
+  // 5. Bắt đầu ngâm
+  reciteLoop(0);
+}
+
+// FIX: Pause/Resume — Chrome mobile không hỗ trợ synth.pause()
+// → Dùng cờ S.paused; vòng lặp tự chờ khi cờ bật
+function onPlayPause() {
+  if (!S.busy && !S.paused) {
+    // Chưa chạy hoặc đã kết thúc → bắt đầu mới
     handleGenerate();
     return;
   }
 
-  if (state.paused) {
-    state.paused = false;
-    updatePlayerUI('playing');
-    window.speechSynthesis.resume();
+  if (S.paused) {
+    // Resume
+    S.paused = false;
+    // Cũng gọi synth.resume() cho desktop nếu có
+    try { window.speechSynthesis.resume(); } catch(e) {}
+    setUI('playing');
   } else {
-    state.paused = true;
-    updatePlayerUI('paused');
-    window.speechSynthesis.pause();
+    // Pause
+    S.paused = true;
+    try { window.speechSynthesis.pause(); } catch(e) {}
+    setUI('paused');
   }
 }
 
-function stopAll() {
-  state.stopped = true;
-  state.playing = false;
-  state.paused  = false;
-  clearTimeout(state._sleepId);
+async function onStop() {
+  S.aborted = true;
+  S.paused  = false;
+  S.busy    = false;
+  stopKeepAlive();
   window.speechSynthesis.cancel();
-
-  updatePlayerUI('stopped');
+  await waitForIdle();
+  setUI('stopped');
   document.getElementById('gen-btn').disabled = false;
-  document.getElementById('gen-btn').querySelector('.btn-icon').textContent = '♪';
-  document.getElementById('pulse-dot').style.animationPlayState = 'paused';
+  document.getElementById('btn-icon').textContent = '♪';
 }
 
-// Stop if user navigates away
+// ── UI STATE ────────────────────────────────────────────────────
+function setUI(state) {
+  const playBtn = document.getElementById('play-btn');
+  switch (state) {
+    case 'playing':
+      playBtn.textContent = '⏸'; playBtn.title = 'Tạm dừng';
+      break;
+    case 'paused':
+      playBtn.textContent = '▶'; playBtn.title = 'Tiếp tục';
+      break;
+    case 'done':
+    case 'stopped':
+      playBtn.textContent = '▶'; playBtn.title = 'Phát lại';
+      break;
+  }
+}
+
+// Dừng khi rời trang
+window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
 window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
 </script>
 </body>
