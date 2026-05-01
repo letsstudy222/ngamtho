@@ -3,34 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ngâm Thơ AI — Giọng Tiếng Việt</title>
+<title>Ngâm Thơ AI — Cloud TTS</title>
 <style>
 /* ── RESET & TOKENS ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --gold:        #9A7228;
-  --gold-h:      #7D5C1A;
-  --gold-l:      #C8A050;
-  --gold-pale:   #FAF5E8;
-  --gold-faint:  #F3E8CC;
-  --ink:         #1E1810;
-  --ink-mid:     #4A3D2A;
-  --ink-soft:    #7A6A52;
-  --ink-faint:   #B0A088;
-  --paper:       #FDFAF3;
-  --paper-w:     #F7F0DF;
-  --border:      #E0D4B8;
-  --green:       #4A8C42;
-  --red:         #B83030;
-  --warn-bg:     #FEF8E6;
-  --warn-border: #E0C060;
-  --warn-text:   #7A5C10;
-  --err-bg:      #FEF0F0;
-  --err-border:  #D07070;
-  --err-text:    #8C2020;
-  --r:           10px;
-  --shadow:      0 2px 20px rgba(100,70,20,.10);
+  --gold:       #9A7228;
+  --gold-h:     #7D5C1A;
+  --gold-l:     #C8A050;
+  --gold-pale:  #FAF5E8;
+  --gold-faint: #F3E8CC;
+  --ink:        #1E1810;
+  --ink-mid:    #4A3D2A;
+  --ink-soft:   #7A6A52;
+  --ink-faint:  #B0A088;
+  --paper:      #FDFAF3;
+  --paper-w:    #F7F0DF;
+  --border:     #E0D4B8;
+  --green:      #3A7A32;
+  --green-bg:   #F0F8EE;
+  --green-bd:   #8CC880;
+  --red:        #B83030;
+  --red-bg:     #FEF0F0;
+  --red-bd:     #D07070;
+  --warn-bg:    #FEF8E6;
+  --warn-bd:    #E0C060;
+  --warn-txt:   #7A5C10;
+  --blue-bg:    #EEF4FF;
+  --blue-bd:    #6090D0;
+  --blue-txt:   #1A3A6A;
+  --r: 10px;
+  --shadow: 0 2px 20px rgba(100,70,20,.10);
 }
 
 body {
@@ -42,241 +46,227 @@ body {
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
   padding: 2.5rem 1rem 4rem;
-  font-family: -apple-system, 'Segoe UI', 'Be Vietnam Pro', sans-serif;
+  font-family: -apple-system, 'Segoe UI', sans-serif;
   color: var(--ink);
 }
 
-/* ── HEADER ──────────────────────────────────────────────────── */
+/* ── HEADER ── */
 header { text-align: center; margin-bottom: 2rem; }
-
 .rule {
-  display: flex; align-items: center; justify-content: center;
-  gap: 10px; margin-bottom: 8px;
+  display:flex; align-items:center; justify-content:center;
+  gap:10px; margin-bottom:8px;
 }
-.rule::before, .rule::after {
-  content:''; display:block; width:52px; height:1px;
-}
-.rule::before { background: linear-gradient(90deg,transparent,var(--gold-l)); }
-.rule::after  { background: linear-gradient(90deg,var(--gold-l),transparent); }
+.rule::before { content:''; display:block; width:52px; height:1px; background:linear-gradient(90deg,transparent,var(--gold-l)); }
+.rule::after  { content:''; display:block; width:52px; height:1px; background:linear-gradient(90deg,var(--gold-l),transparent); }
 .diamond { width:7px; height:7px; background:var(--gold); transform:rotate(45deg); }
+h1 { font-family:Georgia,serif; font-size:clamp(1.8rem,5vw,2.6rem); font-weight:400; line-height:1.15; }
+h1 em { font-style:italic; color:var(--gold); }
+.sub { font-size:13px; color:var(--ink-soft); margin-top:6px; letter-spacing:.5px; }
 
-h1 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(1.8rem,5vw,2.6rem);
-  font-weight: 400; line-height: 1.15;
-}
-h1 em { font-style: italic; color: var(--gold); }
-.sub { font-size: 13px; color: var(--ink-soft); margin-top: 6px; letter-spacing: .5px; }
-
-/* ── CARD ────────────────────────────────────────────────────── */
+/* ── CARD ── */
 .card {
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: var(--r);
   box-shadow: var(--shadow);
   padding: 1.5rem 1.7rem;
-  width: 100%; max-width: 700px;
+  width:100%; max-width:700px;
+  margin-bottom:1rem;
+}
+.clabel { font-size:10px; font-weight:600; letter-spacing:1.3px; text-transform:uppercase; color:var(--ink-faint); margin-bottom:.85rem; }
+
+/* ── API KEY PANEL ── */
+.api-panel {
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-bd);
+  border-radius: 8px;
+  padding: 14px 16px;
   margin-bottom: 1rem;
 }
-.clabel {
-  font-size: 10px; font-weight: 600; letter-spacing: 1.3px;
-  text-transform: uppercase; color: var(--ink-faint); margin-bottom: .85rem;
+.api-panel h3 { font-size:13px; color:var(--blue-txt); margin-bottom:8px; display:flex; align-items:center; gap:7px; }
+.api-row { display:flex; gap:8px; align-items:center; }
+.api-input {
+  flex:1; padding:8px 12px; font-size:13px;
+  border:1px solid var(--blue-bd); border-radius:6px;
+  background:#fff; color:var(--ink); outline:none;
+  font-family:monospace; letter-spacing:.5px;
+  transition:border-color .15s;
 }
+.api-input:focus { border-color:var(--gold); }
+.api-note { font-size:11px; color:var(--blue-txt); margin-top:6px; line-height:1.6; opacity:.85; }
+.api-note a { color:var(--gold); }
 
-/* ── TEXTAREA ────────────────────────────────────────────────── */
+/* ── ENGINE TABS ── */
+.engine-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.etab {
+  padding:6px 14px; border-radius:20px; font-size:12.5px; font-weight:500;
+  border:1px solid var(--border); background:var(--paper-w); color:var(--ink-soft);
+  cursor:pointer; transition:all .15s;
+}
+.etab:hover { border-color:var(--gold-l); color:var(--gold); }
+.etab.active { background:var(--gold); color:#FEF9EC; border-color:var(--gold); }
+.etab .badge {
+  display:inline-block; font-size:10px; padding:1px 6px;
+  border-radius:10px; margin-left:5px;
+  background:rgba(255,255,255,.25); vertical-align:middle;
+}
+.etab:not(.active) .badge { background:rgba(0,0,0,.07); }
+
+/* ── ENGINE INFO ── */
+.einfo { display:none; }
+.einfo.show { display:block; }
+.einfo-box {
+  padding:10px 13px; border-radius:6px; font-size:12px; line-height:1.65;
+  border:1px solid var(--border); background:var(--paper-w); margin-bottom:12px;
+  color:var(--ink-soft);
+}
+.einfo-box.warn { background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn-txt); }
+
+/* ── TEXTAREA ── */
 textarea {
-  width: 100%; min-height: 175px;
-  padding: 13px 15px;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 15.5px; line-height: 2.05;
-  color: var(--ink); background: var(--gold-pale);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--gold-l);
-  border-radius: 6px; resize: vertical; outline: none;
-  transition: border-color .2s; caret-color: var(--gold);
+  width:100%; min-height:175px; padding:13px 15px;
+  font-family:Georgia,serif; font-size:15.5px; line-height:2.05;
+  color:var(--ink); background:var(--gold-pale);
+  border:1px solid var(--border); border-left:3px solid var(--gold-l);
+  border-radius:6px; resize:vertical; outline:none;
+  transition:border-color .2s; caret-color:var(--gold);
 }
-textarea:focus { border-color: var(--gold); background: #FFFDF6; }
-textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+textarea:focus { border-color:var(--gold); background:#FFFDF6; }
+textarea::placeholder { color:var(--ink-faint); font-style:italic; }
 
-.row-end {
-  display:flex; justify-content:space-between;
-  align-items:center; margin-top:8px; gap:8px; flex-wrap:wrap;
-}
-.hint { font-size: 11.5px; color: var(--ink-faint); font-style: italic; }
+.row-end { display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:8px; flex-wrap:wrap; }
+.hint { font-size:11.5px; color:var(--ink-faint); font-style:italic; }
 .btns { display:flex; gap:7px; }
-
 .btn-ghost {
-  background:none; border:1px solid var(--border);
-  border-radius:5px; padding:4px 12px;
-  font-size:12px; color:var(--ink-soft); cursor:pointer;
-  transition: background .15s, color .15s, border-color .15s;
+  background:none; border:1px solid var(--border); border-radius:5px;
+  padding:4px 12px; font-size:12px; color:var(--ink-soft); cursor:pointer;
+  transition:background .15s, color .15s, border-color .15s;
 }
 .btn-ghost:hover { background:var(--paper-w); color:var(--gold); border-color:var(--gold-l); }
 
-/* ── VOICE PANEL ─────────────────────────────────────────────── */
-.voice-status {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 14px;
-  border-radius:7px; font-size:13px; margin-bottom:1rem;
-  border:1px solid var(--border);
-  background: var(--paper-w);
-  transition: background .3s, border-color .3s;
-}
-.voice-status.ok     { background:#F0F8EE; border-color:#8CC880; color:#2A6020; }
-.voice-status.warn   { background:var(--warn-bg); border-color:var(--warn-border); color:var(--warn-text); }
-.voice-status.err    { background:var(--err-bg); border-color:var(--err-border); color:var(--err-text); }
-.voice-status.loading{ background:var(--paper-w); color:var(--ink-soft); }
-
-.status-icon { font-size:17px; flex-shrink:0; }
-.status-body { flex:1; line-height:1.55; }
-.status-body strong { display:block; font-size:12.5px; margin-bottom:2px; }
-.status-body small   { font-size:11.5px; opacity:.85; }
-
-/* ── SELECTS & SLIDERS ───────────────────────────────────────── */
+/* ── VOICE SELECT ── */
 .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 @media(max-width:480px){ .g2{ grid-template-columns:1fr; } }
-
-.ctrl label {
-  display:block; font-size:11.5px; color:var(--ink-soft);
-  margin-bottom:6px; font-weight:500;
-}
+.ctrl label { display:block; font-size:11.5px; color:var(--ink-soft); margin-bottom:6px; font-weight:500; }
 
 select {
-  width:100%; padding:8px 30px 8px 11px;
-  font-size:13.5px; color:var(--ink);
-  background:var(--gold-pale);
+  width:100%; padding:8px 30px 8px 11px; font-size:13.5px;
+  color:var(--ink); background:var(--gold-pale);
   border:1px solid var(--border); border-radius:6px;
   outline:none; cursor:pointer; appearance:none;
+  font-family:inherit;
   background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239A7228' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat; background-position:right 10px center;
   transition:border-color .15s;
-  font-family: inherit;
 }
 select:focus { border-color:var(--gold); }
-select:disabled { opacity:.5; cursor:not-allowed; }
 
+/* sliders */
 .srow { display:flex; align-items:center; gap:10px; }
-
 input[type=range] {
   flex:1; -webkit-appearance:none; height:4px;
   background:var(--border); border-radius:2px; outline:none; cursor:pointer;
 }
 input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none; width:17px; height:17px;
-  border-radius:50%; background:var(--gold);
-  border:2px solid var(--paper);
-  box-shadow:0 1px 5px rgba(100,70,10,.28);
-  transition:transform .1s;
+  -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+  background:var(--gold); border:2px solid var(--paper);
+  box-shadow:0 1px 5px rgba(100,70,10,.28); transition:transform .1s;
 }
 input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.18); }
 input[type=range]::-moz-range-thumb {
   width:17px; height:17px; border-radius:50%;
   background:var(--gold); border:2px solid var(--paper); cursor:pointer;
 }
-.sv {
-  min-width:44px; font-size:12px; font-weight:600;
-  color:var(--gold); text-align:right;
-}
+.sv { min-width:44px; font-size:12px; font-weight:600; color:var(--gold); text-align:right; }
 
-/* ── GENERATE BUTTON ─────────────────────────────────────────── */
+/* ── GENERATE BUTTON ── */
 #gen-btn {
   width:100%; padding:15px 20px;
   background:var(--gold); color:#FEF9EC;
   border:none; border-radius:8px;
-  font-family: Georgia, serif; font-size:16px; letter-spacing:.4px;
+  font-family:Georgia,serif; font-size:16px; letter-spacing:.4px;
   cursor:pointer;
   display:flex; align-items:center; justify-content:center; gap:10px;
   transition:background .2s, transform .1s, opacity .2s;
   position:relative; overflow:hidden;
 }
-#gen-btn::after {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,transparent 100%);
-  pointer-events:none;
-}
+#gen-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,transparent 100%); pointer-events:none; }
 #gen-btn:hover:not(:disabled) { background:var(--gold-h); }
 #gen-btn:active:not(:disabled){ transform:scale(.99); }
 #gen-btn:disabled { opacity:.45; cursor:not-allowed; }
 .bico { font-size:19px; line-height:1; transition:transform .3s; }
 #gen-btn:hover:not(:disabled) .bico { transform:scale(1.2) rotate(-6deg); }
 
-/* ── PROGRESS ────────────────────────────────────────────────── */
-#progress { display:none; margin-top:14px; }
-#progress.show { display:block; }
-.pbar-w { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:9px; }
-.pbar-f { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-l)); border-radius:2px; transition:width .4s ease; width:0%; }
-.srow2 { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); }
-.dot { width:7px; height:7px; border-radius:50%; background:var(--gold); animation:blink 1s ease-in-out infinite; flex-shrink:0; }
-@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.65)} }
+/* ── STATUS BOX ── */
+.sbox {
+  display:none; margin-top:14px;
+  padding:12px 15px; border-radius:7px; font-size:13px;
+  border:1px solid var(--border); background:var(--paper-w);
+  transition:all .3s;
+}
+.sbox.show { display:flex; align-items:flex-start; gap:11px; }
+.sbox.loading { background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn-txt); }
+.sbox.ok  { background:var(--green-bg); border-color:var(--green-bd); color:#2A5020; }
+.sbox.err { background:var(--red-bg); border-color:var(--red-bd); color:var(--red); }
+.sbox-icon { font-size:18px; flex-shrink:0; }
+.sbox-body { flex:1; line-height:1.6; }
+.sbox-body strong { display:block; font-size:13px; margin-bottom:2px; }
+.sbox-body small { font-size:11.5px; opacity:.85; }
 
-/* ── POEM VIEWER ─────────────────────────────────────────────── */
+/* spinner */
+.spin {
+  width:18px; height:18px; border-radius:50%; flex-shrink:0;
+  border:2px solid rgba(160,120,48,.25); border-top-color:var(--gold);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* progress bar */
+.pbar-w { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-top:8px; }
+.pbar-f { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-l)); border-radius:2px; transition:width .4s ease; width:0%; }
+
+/* ── AUDIO PLAYER ── */
+#player { display:none; margin-top:14px; }
+#player.show { display:block; }
+.player-wrap {
+  background:#FFF8E6; border:1px solid #E8D898; border-radius:8px;
+  padding:14px 16px;
+}
+.player-top { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.play-icon { font-size:17px; }
+.player-title { font-family:Georgia,serif; font-size:14px; font-style:italic; color:var(--ink-mid); }
+.player-meta { font-size:11px; color:var(--ink-faint); margin-top:2px; }
+
+audio {
+  width:100%; height:40px; border-radius:6px; outline:none;
+  accent-color:var(--gold);
+}
+audio::-webkit-media-controls-panel { background:var(--gold-pale); }
+
+.player-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.btn-dl {
+  display:flex; align-items:center; gap:6px;
+  padding:7px 14px; border-radius:6px; font-size:13px;
+  border:1px solid var(--border); background:var(--paper); color:var(--ink-soft);
+  cursor:pointer; text-decoration:none; font-family:inherit;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.btn-dl:hover { background:var(--paper-w); color:var(--gold); border-color:var(--gold-l); }
+
+/* ── POEM VIEWER ── */
 #viewer {
   display:none; margin-top:12px;
   background:var(--gold-pale); border:1px solid var(--border);
   border-left:3px solid var(--gold-l); border-radius:6px;
-  padding:12px 15px; max-height:205px; overflow-y:auto;
-  font-family: Georgia, serif; font-size:15px; line-height:2.1;
-  scroll-behavior:smooth;
+  padding:12px 15px; max-height:200px; overflow-y:auto;
+  font-family:Georgia,serif; font-size:15px; line-height:2.1; scroll-behavior:smooth;
 }
 #viewer.show { display:block; }
 #viewer::-webkit-scrollbar { width:5px; }
 #viewer::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-.pl { padding:1px 7px; border-radius:4px; transition:background .3s, color .25s; }
-.pl.active {
-  background:var(--gold-faint); color:var(--ink); font-weight:600;
-  border-left:2px solid var(--gold); padding-left:10px; margin-left:-3px;
-}
-.pl.done { color:var(--ink-faint); }
+.pl { padding:1px 7px; border-radius:4px; color:var(--ink-mid); }
 
-/* ── PLAYER ──────────────────────────────────────────────────── */
-#player { display:none; margin-top:14px; }
-#player.show {
-  display:flex; align-items:center; gap:13px;
-  padding:13px 15px;
-  background:#FFF8E6; border:1px solid #E8D898; border-radius:8px;
-}
-.pbtn {
-  border:none; border-radius:50%; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; transition:background .15s, transform .1s;
-}
-.pbtn:active { transform:scale(.91); }
-#play-btn {
-  width:46px; height:46px; font-size:16px;
-  background:var(--gold); color:#FEF9EC;
-  box-shadow:0 2px 8px rgba(160,120,48,.28);
-}
-#play-btn:hover { background:var(--gold-h); }
-#stop-btn {
-  width:36px; height:36px; font-size:11px;
-  background:transparent; color:var(--ink-soft);
-  border:1px solid var(--border) !important;
-}
-#stop-btn:hover { background:#FEF0F0; color:var(--red); border-color:#D07070 !important; }
-.pinfo { flex:1; min-width:0; }
-.ptag { font-size:10.5px; color:var(--ink-faint); letter-spacing:.6px; text-transform:uppercase; font-weight:600; margin-bottom:3px; }
-.pline-txt {
-  font-family: Georgia, serif; font-size:14px; font-style:italic;
-  color:var(--ink-mid); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.mprog { height:3px; background:var(--border); border-radius:2px; margin-top:8px; overflow:hidden; }
-.mprog-f { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-l)); border-radius:2px; transition:width .4s; }
-.pcnt { font-size:11px; color:var(--ink-faint); white-space:nowrap; flex-shrink:0; }
-
-/* ── INSTALL GUIDE ───────────────────────────────────────────── */
-#install-guide { display:none; }
-#install-guide.show { display:block; margin-top:10px; }
-.guide-box {
-  background:var(--warn-bg); border:1px solid var(--warn-border);
-  border-radius:7px; padding:13px 15px;
-  font-size:12.5px; color:var(--warn-text); line-height:1.7;
-}
-.guide-box h4 { font-size:13px; margin-bottom:6px; color:var(--gold-h); }
-.guide-box ol { padding-left:18px; }
-.guide-box li { margin-bottom:4px; }
-.guide-box code { background:rgba(160,120,48,.12); padding:1px 5px; border-radius:3px; font-size:11.5px; }
-
-/* ── FOOTER ──────────────────────────────────────────────────── */
+/* ── FOOTER ── */
 footer { margin-top:2.5rem; text-align:center; font-size:11.5px; color:var(--ink-faint); }
 footer .dots { display:block; letter-spacing:5px; color:var(--gold-l); margin-bottom:4px; }
 </style>
@@ -286,12 +276,166 @@ footer .dots { display:block; letter-spacing:5px; color:var(--gold-l); margin-bo
 <header>
   <div class="rule"><div class="diamond"></div></div>
   <h1>Ngâm Thơ <em>AI</em></h1>
-  <p class="sub">Đọc thơ tiếng Việt — giọng chậm, rõ, đầy cảm xúc</p>
+  <p class="sub">Cloud TTS — Giọng tiếng Việt chất lượng cao, không cần cài đặt</p>
 </header>
 
-<!-- ── BÀI THƠ ─────────────────────────────────────────────── -->
+<!-- ── CHỌN ENGINE ── -->
 <div class="card">
-  <div class="clabel">Bài thơ</div>
+  <div class="clabel">Chọn dịch vụ TTS</div>
+
+  <div class="engine-tabs">
+    <button class="etab active" onclick="switchEngine('fpt')" id="tab-fpt">
+      FPT.AI <span class="badge">Khuyến nghị</span>
+    </button>
+    <button class="etab" onclick="switchEngine('google')" id="tab-google">
+      Google Cloud TTS <span class="badge">Chất lượng cao</span>
+    </button>
+    <button class="etab" onclick="switchEngine('azure')" id="tab-azure">
+      Azure Neural TTS <span class="badge">Tốt nhất</span>
+    </button>
+    <button class="etab" onclick="switchEngine('webspeech')" id="tab-webspeech">
+      Web Speech API <span class="badge">Miễn phí</span>
+    </button>
+  </div>
+
+  <!-- FPT.AI -->
+  <div class="einfo show" id="einfo-fpt">
+    <div class="einfo-box">
+      ✅ <strong>FPT.AI TTS</strong> — Chuyên tiếng Việt · 4 giọng (Nam/Nữ · Bắc/Nam) ·
+      Miễn phí 30,000 ký tự/tháng · Đăng ký tại
+      <a href="https://fpt.ai/tts" target="_blank" style="color:var(--gold)">fpt.ai/tts</a>
+    </div>
+    <div class="api-panel">
+      <h3>🔑 FPT.AI API Key</h3>
+      <div class="api-row">
+        <input type="password" class="api-input" id="fpt-key" placeholder="Dán API key của bạn vào đây...">
+        <button class="btn-ghost" onclick="toggleKey('fpt-key')">Hiện</button>
+      </div>
+      <div class="api-note">
+        Lấy API key miễn phí tại <a href="https://console.fpt.ai" target="_blank">console.fpt.ai</a> →
+        Đăng nhập → API Key → Tạo key mới · Key được lưu trong bộ nhớ trình duyệt, không gửi đi đâu khác.
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ctrl">
+        <label>Giọng đọc</label>
+        <select id="fpt-voice">
+          <option value="banmai">♀ Ban Mai — Nữ · Bắc (tự nhiên nhất)</option>
+          <option value="leminh">♂ Lê Minh — Nam · Bắc</option>
+          <option value="lannhi">♀ Lan Nhi — Nữ · Nam</option>
+          <option value="minhquang">♂ Minh Quang — Nam · Nam</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <label>Tốc độ đọc</label>
+        <div class="srow">
+          <input type="range" id="fpt-speed" min="-3" max="3" step="1" value="-2">
+          <span class="sv" id="fpt-speed-v">Chậm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google -->
+  <div class="einfo" id="einfo-google">
+    <div class="einfo-box">
+      ✅ <strong>Google Cloud TTS</strong> — WaveNet & Neural2 vi-VN · Cực tự nhiên ·
+      1M ký tự/tháng miễn phí · Cần tạo project tại Google Cloud Console
+    </div>
+    <div class="api-panel">
+      <h3>🔑 Google Cloud API Key</h3>
+      <div class="api-row">
+        <input type="password" class="api-input" id="google-key" placeholder="AIza...">
+        <button class="btn-ghost" onclick="toggleKey('google-key')">Hiện</button>
+      </div>
+      <div class="api-note">
+        <a href="https://console.cloud.google.com" target="_blank" style="color:var(--gold)">console.cloud.google.com</a>
+        → Tạo project → Bật Cloud Text-to-Speech API → Credentials → API Key
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ctrl">
+        <label>Giọng đọc</label>
+        <select id="google-voice">
+          <option value="vi-VN-Neural2-A">♀ Neural2-A — Nữ · Tự nhiên nhất</option>
+          <option value="vi-VN-Neural2-D">♂ Neural2-D — Nam · Tự nhiên nhất</option>
+          <option value="vi-VN-Wavenet-A">♀ WaveNet-A — Nữ · Chất lượng cao</option>
+          <option value="vi-VN-Wavenet-B">♂ WaveNet-B — Nam · Chất lượng cao</option>
+          <option value="vi-VN-Wavenet-C">♀ WaveNet-C — Nữ · Biểu cảm</option>
+          <option value="vi-VN-Wavenet-D">♂ WaveNet-D — Nam · Trầm</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <label>Tốc độ (<span id="google-rate-v">0.75×</span>)</label>
+        <div class="srow">
+          <input type="range" id="google-rate" min="0.5" max="1.0" step="0.05" value="0.75"
+            oninput="document.getElementById('google-rate-v').textContent=parseFloat(this.value).toFixed(2)+'×'">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Azure -->
+  <div class="einfo" id="einfo-azure">
+    <div class="einfo-box">
+      ✅ <strong>Azure Neural TTS</strong> — Giọng Neural vi-VN cực kỳ tự nhiên ·
+      500K ký tự/tháng miễn phí · Cần tài khoản Microsoft Azure
+    </div>
+    <div class="api-panel">
+      <h3>🔑 Azure Subscription Key</h3>
+      <div class="api-row">
+        <input type="password" class="api-input" id="azure-key" placeholder="Subscription key...">
+        <button class="btn-ghost" onclick="toggleKey('azure-key')">Hiện</button>
+      </div>
+      <div class="ctrl" style="margin-top:10px">
+        <label>Azure Region</label>
+        <select id="azure-region" style="max-width:240px">
+          <option value="southeastasia">Southeast Asia (gần VN nhất)</option>
+          <option value="eastasia">East Asia</option>
+          <option value="australiaeast">Australia East</option>
+          <option value="westus">West US</option>
+          <option value="eastus">East US</option>
+        </select>
+      </div>
+      <div class="api-note" style="margin-top:8px">
+        <a href="https://portal.azure.com" target="_blank" style="color:var(--gold)">portal.azure.com</a>
+        → Tạo resource "Speech" → Keys and Endpoint → Copy KEY 1
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ctrl">
+        <label>Giọng đọc</label>
+        <select id="azure-voice">
+          <option value="vi-VN-HoaiMyNeural">♀ HoaiMy — Nữ · Rất tự nhiên</option>
+          <option value="vi-VN-NamMinhNeural">♂ NamMinh — Nam · Rõ ràng</option>
+        </select>
+      </div>
+      <div class="ctrl">
+        <label>Tốc độ</label>
+        <div class="srow">
+          <input type="range" id="azure-rate" min="-50" max="0" step="5" value="-30">
+          <span class="sv" id="azure-rate-v">-30%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Speech -->
+  <div class="einfo" id="einfo-webspeech">
+    <div class="einfo-box warn">
+      ⚠️ <strong>Web Speech API</strong> — Phụ thuộc vào giọng cài sẵn trên hệ điều hành.
+      Nhiều máy không có giọng tiếng Việt → Dùng làm fallback khi không có API key.
+      Không cần API key, hoạt động ngay nhưng chất lượng thấp và không ổn định.
+    </div>
+    <div id="ws-status" style="font-size:12.5px; color:var(--ink-soft); padding:4px 0">
+      Đang kiểm tra giọng tiếng Việt...
+    </div>
+  </div>
+</div>
+
+<!-- ── BÀI THƠ ── -->
+<div class="card">
+  <div class="clabel">Bài thơ cần đọc</div>
   <textarea id="poem-input" rows="8"
     placeholder="Dán bài thơ vào đây...
 
@@ -307,512 +451,565 @@ Trông cá cá lặn, trông sao sao mờ..."></textarea>
   </div>
 </div>
 
-<!-- ── GIỌNG & CÀI ĐẶT ────────────────────────────────────── -->
-<div class="card">
-  <div class="clabel">Giọng đọc &amp; Cài đặt</div>
-
-  <!-- Trạng thái giọng tiếng Việt -->
-  <div class="voice-status loading" id="vstatus">
-    <span class="status-icon">⏳</span>
-    <div class="status-body">
-      <strong>Đang tải danh sách giọng...</strong>
-      <small>Vui lòng đợi trình duyệt khởi tạo Web Speech API</small>
-    </div>
-  </div>
-
-  <!-- Hướng dẫn cài giọng tiếng Việt nếu không có -->
-  <div id="install-guide">
-    <div class="guide-box">
-      <h4>📥 Cách cài giọng tiếng Việt trên trình duyệt</h4>
-      <ol>
-        <li><strong>Windows 10/11:</strong> Settings → Time &amp; Language → Speech → <em>Add voices</em> → tìm <code>Tiếng Việt</code></li>
-        <li><strong>macOS:</strong> System Settings → Accessibility → Spoken Content → System Voice → Customize → tìm <code>Vietnamese</code></li>
-        <li><strong>Android:</strong> Settings → General Management → Language → Text-to-speech → cài <code>Google TTS</code> → tải gói tiếng Việt</li>
-        <li>Sau khi cài xong, <strong>khởi động lại Chrome</strong> và tải lại trang này</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="g2" style="margin-top:14px; margin-bottom:12px">
-    <div class="ctrl">
-      <label for="voice-sel">Chọn giọng đọc</label>
-      <select id="voice-sel" disabled>
-        <option value="">Đang tải giọng...</option>
-      </select>
-    </div>
-    <div class="ctrl">
-      <label for="s-rate">Tốc độ ngâm</label>
-      <div class="srow">
-        <input type="range" id="s-rate" min="0.3" max="0.9" step="0.05" value="0.55">
-        <span class="sv" id="v-rate">0.55×</span>
-      </div>
-    </div>
-    <div class="ctrl">
-      <label for="s-pitch">Cao độ giọng</label>
-      <div class="srow">
-        <input type="range" id="s-pitch" min="0.6" max="1.5" step="0.05" value="1.05">
-        <span class="sv" id="v-pitch">1.05</span>
-      </div>
-    </div>
-    <div class="ctrl">
-      <label for="s-pause">Ngắt nghỉ giữa câu</label>
-      <div class="srow">
-        <input type="range" id="s-pause" min="300" max="2500" step="100" value="1000">
-        <span class="sv" id="v-pause">1000ms</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── NÚT + PLAYER ───────────────────────────────────────── -->
+<!-- ── GENERATE + PLAYER ── -->
 <div class="card">
   <button id="gen-btn" onclick="handleGenerate()">
     <span class="bico" id="bico">♪</span>
     <span id="blbl">Tạo giọng đọc</span>
   </button>
 
-  <div id="progress">
-    <div class="pbar-w"><div class="pbar-f" id="pbar"></div></div>
-    <div class="srow2"><div class="dot" id="dot"></div><span id="stxt">Chuẩn bị...</span></div>
+  <!-- Trạng thái -->
+  <div class="sbox" id="sbox">
+    <span class="sbox-icon" id="sbox-icon">⏳</span>
+    <div class="sbox-body">
+      <strong id="sbox-title">Đang xử lý...</strong>
+      <small id="sbox-msg">Vui lòng đợi</small>
+      <div class="pbar-w"><div class="pbar-f" id="pbar"></div></div>
+    </div>
   </div>
 
+  <!-- Bài thơ hiển thị -->
   <div id="viewer"></div>
 
+  <!-- Audio player -->
   <div id="player">
-    <button class="pbtn" id="play-btn" onclick="onPlayPause()" title="Phát / Tạm dừng">▶</button>
-    <button class="pbtn" id="stop-btn" onclick="onStop()"      title="Dừng">■</button>
-    <div class="pinfo">
-      <div class="ptag">Đang đọc</div>
-      <div class="pline-txt" id="pline-txt">—</div>
-      <div class="mprog"><div class="mprog-f" id="mprog-f" style="width:0%"></div></div>
+    <div class="player-wrap">
+      <div class="player-top">
+        <span class="play-icon">♪</span>
+        <div>
+          <div class="player-title" id="player-title">Bản ngâm thơ</div>
+          <div class="player-meta" id="player-meta"></div>
+        </div>
+      </div>
+      <audio id="audio-el" controls preload="auto"></audio>
+      <div class="player-actions">
+        <a class="btn-dl" id="dl-btn" href="#" download="ngam-tho.mp3">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 2v7M4 7l3 3 3-3M2 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Tải về MP3
+        </a>
+        <button class="btn-dl" onclick="clearAudio()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Xoá
+        </button>
+      </div>
     </div>
-    <div class="pcnt" id="pcnt">0 / 0</div>
   </div>
 </div>
 
 <footer>
   <span class="dots">· · ·</span>
-  Web Speech API · Chỉ dùng giọng <code>vi-VN</code> · Không cần backend
+  Cloud TTS · Giọng Việt chất lượng cao · Không cần cài đặt thêm
 </footer>
 
 <script>
-/* =================================================================
-   NGÂM THƠ AI — Vietnamese-only TTS
-   Xử lý 3 trường hợp thực tế:
-     A. Nhiều giọng vi-VN → dropdown đầy đủ
-     B. Đúng 1 giọng vi-VN → dùng giọng đó, không show dropdown
-     C. Không có giọng vi-VN → thông báo + hướng dẫn cài đặt
-================================================================= */
+/* ================================================================
+   NGÂM THƠ AI — Cloud TTS Edition
+   Hỗ trợ 4 engine: FPT.AI / Google Cloud TTS / Azure Neural / Web Speech API
+   Kiến trúc: Pure frontend, không cần backend
+================================================================ */
 
-// ── STATE ────────────────────────────────────────────────────
-const S = {
-  viVoices:      [],      // chỉ giọng vi-VN
-  selectedVoice: null,    // SpeechSynthesisVoice được chọn
-  voicesLoaded:  false,
-
-  lines:    [],
-  curLine:  0,
-  busy:     false,
-  paused:   false,
-  aborted:  false,
-  keepAliveTimer: null,
-  _sleepId: null,
+// ── STATE ─────────────────────────────────────────────────────
+const APP = {
+  engine: 'fpt',        // engine đang dùng
+  currentAudioUrl: null,
+  wsVoice: null,        // Web Speech voice (fallback)
+  busy: false,
 };
 
-// ── MẪU THƠ ─────────────────────────────────────────────────
+// Speed labels cho FPT
+const FPT_SPEED_LABELS = {
+  '-3': 'Rất chậm', '-2': 'Chậm', '-1': 'Hơi chậm',
+  '0': 'Bình thường', '1': 'Hơi nhanh', '2': 'Nhanh', '3': 'Rất nhanh'
+};
+
+// ── SAMPLES ───────────────────────────────────────────────────
 const SAMPLES = [
 `Đêm qua ra đứng bờ ao
-Trông cá cá lặn trông sao sao mờ
+Trông cá cá lặn, trông sao sao mờ
 Buồn trông con nhện giăng tơ
-Nhện ơi nhện hỡi nhện chờ mối ai
-Buồn trông chênh chếch sao mai
-Sao ơi sao hỡi nhớ ai sao mờ`,
+Nhện ơi nhện hỡi, nhện chờ mối ai`,
 
 `Công cha như núi Thái Sơn
 Nghĩa mẹ như nước trong nguồn chảy ra
 Một lòng thờ mẹ kính cha
 Cho tròn chữ hiếu mới là đạo con`,
 
-`Thân em như tấm lụa đào
-Phất phơ giữa chợ biết vào tay ai
-
-Thân em như củ ấu gai
-Ruột trong thì trắng vỏ ngoài thì đen`,
-
 `Cày đồng đang buổi ban trưa
 Mồ hôi thánh thót như mưa ruộng cày
 Ai ơi bưng bát cơm đầy
 Dẻo thơm một hạt đắng cay muôn phần`,
+
+`Thân em như tấm lụa đào
+Phất phơ giữa chợ biết vào tay ai`,
 ];
 let sampleIdx = 0;
 
-// ── KHỞI ĐỘNG ────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  initVoices();
   setupSliders();
   document.getElementById('poem-input').addEventListener('input', updateLC);
   loadSample();
+  initWebSpeech();
+  loadSavedKeys();
+
+  // Azure rate slider
+  document.getElementById('azure-rate').addEventListener('input', function() {
+    document.getElementById('azure-rate-v').textContent = this.value + '%';
+  });
+  document.getElementById('fpt-speed').addEventListener('input', function() {
+    document.getElementById('fpt-speed-v').textContent = FPT_SPEED_LABELS[this.value] || this.value;
+  });
 });
 
-// ── VOICE LOADING — 3 lớp bảo vệ chống race condition ────────
-function initVoices() {
-  // Lớp 1: gọi ngay (có thể trả về [] trên Chrome)
-  tryPopulate(window.speechSynthesis.getVoices());
-
-  // Lớp 2: sự kiện onvoiceschanged (Chrome kích hoạt sau vài ms)
-  window.speechSynthesis.onvoiceschanged = () => {
-    tryPopulate(window.speechSynthesis.getVoices());
-  };
-
-  // Lớp 3: polling fallback cho Firefox / Safari
-  let t = 0;
-  const poll = setInterval(() => {
-    const v = window.speechSynthesis.getVoices();
-    if (v.length > 0) { tryPopulate(v); clearInterval(poll); }
-    if (++t > 30)     { clearInterval(poll); onVoiceTimeout(); }
-  }, 300);
+// ── ENGINE SWITCH ─────────────────────────────────────────────
+function switchEngine(eng) {
+  APP.engine = eng;
+  document.querySelectorAll('.etab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + eng).classList.add('active');
+  document.querySelectorAll('.einfo').forEach(e => e.classList.remove('show'));
+  document.getElementById('einfo-' + eng).classList.add('show');
+  clearAudio();
 }
 
-function tryPopulate(all) {
-  if (S.voicesLoaded || !all || all.length === 0) return;
+// ── API KEY ───────────────────────────────────────────────────
+function toggleKey(id) {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
 
-  // Lọc CHẶT CHẼ: chỉ lấy giọng vi-VN
-  // Một số trình duyệt trả về 'vi' hoặc 'vi-vn' (chữ thường)
-  const vi = all.filter(v => {
-    const lang = v.lang.toLowerCase().replace('_','-');
-    return lang === 'vi-vn' || lang === 'vi';
+// Lưu key vào localStorage để tiện dùng lại (KHÔNG gửi đi đâu)
+function saveKey(engine, key) {
+  if (key) localStorage.setItem('ngamtho_key_' + engine, key);
+}
+function getKey(engine) {
+  const inputId = { fpt: 'fpt-key', google: 'google-key', azure: 'azure-key' };
+  const el = document.getElementById(inputId[engine]);
+  if (el) {
+    const val = el.value.trim();
+    if (val) { saveKey(engine, val); return val; }
+  }
+  return localStorage.getItem('ngamtho_key_' + engine) || '';
+}
+function loadSavedKeys() {
+  ['fpt','google','azure'].forEach(eng => {
+    const saved = localStorage.getItem('ngamtho_key_' + eng);
+    const inputId = { fpt: 'fpt-key', google: 'google-key', azure: 'azure-key' };
+    const el = document.getElementById(inputId[eng]);
+    if (el && saved) el.value = saved;
   });
-
-  S.viVoices    = vi;
-  S.voicesLoaded = true;
-
-  if (vi.length === 0) {
-    onNoViVoice();
-  } else {
-    S.selectedVoice = vi[0];
-    onVoicesReady(vi);
-  }
 }
 
-function onVoicesReady(vi) {
-  const statusEl = document.getElementById('vstatus');
-  const selEl    = document.getElementById('voice-sel');
-
-  if (vi.length === 1) {
-    // Trường hợp B: chỉ 1 giọng
-    statusEl.className = 'voice-status ok';
-    statusEl.innerHTML = `
-      <span class="status-icon">✅</span>
-      <div class="status-body">
-        <strong>Tìm thấy 1 giọng tiếng Việt</strong>
-        <small>${vi[0].name} (${vi[0].lang})${vi[0].localService ? ' · Giọng cục bộ' : ' · Giọng mạng'}</small>
-      </div>`;
-    // Dropdown chỉ có 1 lựa chọn → ẩn đi
-    selEl.closest('.ctrl').style.display = 'none';
-  } else {
-    // Trường hợp A: nhiều giọng
-    statusEl.className = 'voice-status ok';
-    statusEl.innerHTML = `
-      <span class="status-icon">✅</span>
-      <div class="status-body">
-        <strong>Tìm thấy ${vi.length} giọng tiếng Việt</strong>
-        <small>Chọn giọng bên dưới để thay đổi</small>
-      </div>`;
-
-    selEl.innerHTML = '';
-    vi.forEach((v, i) => {
-      const o  = document.createElement('option');
-      o.value  = i;
-      // Gán nhãn thân thiện: cố gắng phát hiện giới tính từ tên
-      o.textContent = friendlyLabel(v, i);
-      selEl.appendChild(o);
-    });
-    selEl.disabled = false;
-
-    selEl.addEventListener('change', function() {
-      S.selectedVoice = S.viVoices[parseInt(this.value)] || S.viVoices[0];
-    });
-  }
-
-  document.getElementById('gen-btn').disabled = false;
-}
-
-// Trường hợp C: không có giọng vi-VN
-function onNoViVoice() {
-  const statusEl = document.getElementById('vstatus');
-  statusEl.className = 'voice-status err';
-  statusEl.innerHTML = `
-    <span class="status-icon">❌</span>
-    <div class="status-body">
-      <strong>Không tìm thấy giọng tiếng Việt (vi-VN)</strong>
-      <small>Trình duyệt hoặc hệ điều hành chưa cài gói ngôn ngữ tiếng Việt</small>
-    </div>`;
-  document.getElementById('install-guide').classList.add('show');
-  document.getElementById('gen-btn').disabled = true;
-}
-
-// Timeout: không load được voices sau 9 giây
-function onVoiceTimeout() {
-  if (S.voicesLoaded) return;
-  const statusEl = document.getElementById('vstatus');
-  statusEl.className = 'voice-status warn';
-  statusEl.innerHTML = `
-    <span class="status-icon">⚠️</span>
-    <div class="status-body">
-      <strong>Không tải được giọng — thử lại bên dưới</strong>
-      <small>Web Speech API chưa sẵn sàng. Nhấn F5 hoặc thử lại.</small>
-    </div>`;
-}
-
-// Gán nhãn hiển thị thân thiện cho từng giọng
-function friendlyLabel(voice, idx) {
-  const n = voice.name.toLowerCase();
-  let gender = '';
-  if (/female|woman|girl|nữ|hoai|thu|lan|mai|linh|ha|oanh|huong/.test(n)) gender = '♀ Nữ — ';
-  else if (/male|man|boy|nam|minh|hung|quang|tuan|long|duc/.test(n))       gender = '♂ Nam — ';
-  else gender = `Giọng ${idx + 1} — `;
-  const svc = voice.localService ? '(cục bộ)' : '(mạng)';
-  return `${gender}${voice.name} ${svc}`;
-}
-
-// ── SLIDERS ──────────────────────────────────────────────────
+// ── SLIDERS ───────────────────────────────────────────────────
 function setupSliders() {
-  const bind = (id, outId, fmt) => {
-    const el  = document.getElementById(id);
-    const out = document.getElementById(outId);
-    el.addEventListener('input', () => { out.textContent = fmt(el.value); });
-    out.textContent = fmt(el.value);
-  };
-  bind('s-rate',  'v-rate',  v => parseFloat(v).toFixed(2) + '×');
-  bind('s-pitch', 'v-pitch', v => parseFloat(v).toFixed(2));
-  bind('s-pause', 'v-pause', v => v + 'ms');
+  document.getElementById('fpt-speed-v').textContent =
+    FPT_SPEED_LABELS[document.getElementById('fpt-speed').value];
 }
 
-// ── THƠ MẪU ──────────────────────────────────────────────────
+// ── POEM HELPERS ──────────────────────────────────────────────
 function loadSample() {
   document.getElementById('poem-input').value = SAMPLES[sampleIdx++ % SAMPLES.length];
   updateLC();
 }
 function clearPoem() {
-  onStop();
+  clearAudio();
   document.getElementById('poem-input').value = '';
   updateLC();
 }
 function updateLC() {
-  document.getElementById('lc').textContent = getLines().length + ' dòng';
+  const n = document.getElementById('poem-input').value
+    .split('\n').filter(l => l.trim()).length;
+  document.getElementById('lc').textContent = n + ' dòng';
 }
 
-// Lấy dòng thơ, giữ dòng trống làm ngắt đoạn (bỏ nhiều dòng trống liên tiếp)
-function getLines() {
-  const raw = document.getElementById('poem-input').value.split('\n');
-  const out = []; let prevE = false;
-  for (const l of raw) {
-    const t = l.trim();
-    if (!t) { if (!prevE) out.push(''); prevE = true; }
-    else    { out.push(t); prevE = false; }
-  }
-  while (out.length && out[0]           === '') out.shift();
-  while (out.length && out[out.length-1]=== '') out.pop();
-  return out;
-}
-
-// ── POEM VIEWER (highlight từng dòng) ────────────────────────
-function buildViewer(lines) {
+// Build viewer từ poem text
+function buildViewer(text) {
   const v = document.getElementById('viewer');
-  v.innerHTML = '';
-  lines.forEach((line, i) => {
-    const d = document.createElement('div');
-    d.className = 'pl'; d.id = 'pl-' + i;
-    d.textContent = line || '\u00A0';
-    v.appendChild(d);
-  });
+  const lines = text.split('\n').filter(l => l.trim());
+  v.innerHTML = lines.map(l =>
+    `<div class="pl">${escHtml(l)}</div>`
+  ).join('');
   v.classList.add('show');
 }
-
-function hlLine(idx, total) {
-  document.getElementById('viewer')
-    .querySelectorAll('.pl').forEach((el, i) => {
-      el.classList.remove('active');
-      el.classList.toggle('done', i < idx);
-    });
-  const a = document.getElementById('pl-' + idx);
-  if (a) { a.classList.add('active'); a.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-
-  const pct = total > 1 ? Math.round((idx / (total - 1)) * 100) : 100;
-  document.getElementById('pbar').style.width     = pct + '%';
-  document.getElementById('mprog-f').style.width  = pct + '%';
-  document.getElementById('pcnt').textContent      = (idx+1) + ' / ' + total;
-  document.getElementById('pline-txt').textContent = S.lines[idx] || '(ngắt đoạn)';
-  document.getElementById('stxt').textContent      = `Dòng ${idx+1}/${total}: "${S.lines[idx]||'...'}"`;
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── SPEECH ENGINE ─────────────────────────────────────────────
-// Mỗi câu = 1 utterance riêng → tránh Chrome freeze sau 15s
-function utter(text, rate, pitch) {
-  return new Promise(resolve => {
-    if (S.aborted) { resolve(); return; }
+// ── STATUS UI ─────────────────────────────────────────────────
+function setStatus(type, title, msg, pct) {
+  const box = document.getElementById('sbox');
+  box.className = 'sbox show ' + type;
 
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate   = Math.max(0.1, Math.min(10, rate));
-    u.pitch  = Math.max(0,   Math.min(2,  pitch));
-    u.volume = 1;
+  const icons = { loading:'', ok:'✅', err:'❌' };
+  document.getElementById('sbox-icon').innerHTML =
+    type === 'loading'
+      ? '<div class="spin"></div>'
+      : `<span style="font-size:18px">${icons[type]}</span>`;
 
-    // ── QUAN TRỌNG: gán voice object trực tiếp, KHÔNG dùng index ──
-    if (S.selectedVoice) {
-      u.voice = S.selectedVoice;
-      u.lang  = S.selectedVoice.lang;
-    } else {
-      // Không có giọng vi-VN → không đọc, chỉ ngủ
-      resolve(); return;
+  document.getElementById('sbox-title').textContent = title;
+  document.getElementById('sbox-msg').textContent = msg;
+  if (pct !== undefined) {
+    document.getElementById('pbar').style.width = pct + '%';
+  }
+}
+
+function clearStatus() {
+  document.getElementById('sbox').className = 'sbox';
+}
+
+// ── AUDIO PLAYER ──────────────────────────────────────────────
+function showPlayer(url, meta) {
+  const audio = document.getElementById('audio-el');
+  audio.src = url;
+  APP.currentAudioUrl = url;
+
+  document.getElementById('dl-btn').href = url;
+  document.getElementById('player-meta').textContent = meta || '';
+  document.getElementById('player').classList.add('show');
+  audio.play().catch(() => {});
+}
+
+function clearAudio() {
+  const audio = document.getElementById('audio-el');
+  audio.pause(); audio.src = '';
+  document.getElementById('player').classList.remove('show');
+  document.getElementById('viewer').classList.remove('show');
+  APP.currentAudioUrl = null;
+  clearStatus();
+}
+
+// ── MAIN GENERATE ─────────────────────────────────────────────
+async function handleGenerate() {
+  const text = document.getElementById('poem-input').value.trim();
+  if (!text) { alert('Vui lòng nhập bài thơ!'); return; }
+  if (APP.busy) return;
+
+  clearAudio();
+  buildViewer(text);
+  APP.busy = true;
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('bico').textContent = '♬';
+
+  try {
+    let audioUrl;
+    switch (APP.engine) {
+      case 'fpt':        audioUrl = await generateFPT(text);        break;
+      case 'google':     audioUrl = await generateGoogle(text);     break;
+      case 'azure':      audioUrl = await generateAzure(text);      break;
+      case 'webspeech':  await generateWebSpeech(text); return;
+      default:           throw new Error('Engine không hợp lệ');
     }
 
-    u.onend   = () => resolve();
-    u.onerror = e  => {
-      if (e.error !== 'interrupted') console.warn('TTS error:', e.error);
-      resolve();
-    };
-    window.speechSynthesis.speak(u);
+    const engineNames = { fpt:'FPT.AI', google:'Google Cloud TTS', azure:'Azure Neural TTS' };
+    showPlayer(audioUrl, engineNames[APP.engine] + ' · ' + new Date().toLocaleTimeString('vi-VN'));
+    setStatus('ok', 'Tạo âm thanh thành công!', 'Nhấn play để nghe hoặc tải về MP3', 100);
+
+  } catch (err) {
+    console.error(err);
+    setStatus('err', 'Lỗi tạo âm thanh', err.message, 0);
+  } finally {
+    APP.busy = false;
+    document.getElementById('gen-btn').disabled = false;
+    document.getElementById('bico').textContent = '♪';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ENGINE 1: FPT.AI TTS
+// Docs: https://fpt.ai/tts
+// CORS: FPT cho phép gọi từ browser
+// Flow: POST text → nhận { async: "url_mp3" } → poll URL → phát
+// ══════════════════════════════════════════════════════════════
+async function generateFPT(text) {
+  const key   = getKey('fpt');
+  if (!key) throw new Error('Chưa nhập FPT.AI API Key. Vui lòng điền key vào ô bên trên.');
+
+  const voice = document.getElementById('fpt-voice').value;
+  const speed = document.getElementById('fpt-speed').value;
+
+  setStatus('loading', 'Đang gửi đến FPT.AI...', 'Kết nối với server...', 10);
+
+  // Làm sạch text: bỏ ký tự đặc biệt FPT không hỗ trợ
+  const cleanText = text
+    .replace(/["""'']/g, '"')
+    .replace(/[–—]/g, ',')
+    .trim();
+
+  const res = await fetch('https://api.fpt.ai/hmi/tts/v5', {
+    method: 'POST',
+    headers: {
+      'api-key':      key,
+      'voice':        voice,
+      'speed':        speed,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: cleanText,
   });
-}
 
-// Chrome keep-alive: pause()/resume() mỗi 10s để tránh engine tự tắt
-function startKA() {
-  stopKA();
-  S.keepAliveTimer = setInterval(() => {
-    if (!S.busy || S.paused || S.aborted) return;
-    if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.pause();
-      setTimeout(() => { if (!S.paused && !S.aborted) window.speechSynthesis.resume(); }, 50);
-    }
-  }, 10000);
-}
-function stopKA() {
-  if (S.keepAliveTimer) { clearInterval(S.keepAliveTimer); S.keepAliveTimer = null; }
-}
-
-// Đợi engine rảnh sau cancel() — Chrome cần ~60–100ms
-function waitIdle() {
-  return new Promise(res => {
-    const chk = () => {
-      if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) res();
-      else setTimeout(chk, 60);
-    };
-    setTimeout(chk, 60);
-  });
-}
-
-function sleep(ms) {
-  return new Promise(res => {
-    if (S.aborted) { res(); return; }
-    S._sleepId = setTimeout(res, ms);
-  });
-}
-
-// ── VÒNG LẶP NGÂM THƠ ────────────────────────────────────────
-async function recite(from = 0) {
-  const rate  = parseFloat(document.getElementById('s-rate').value);
-  const pitch = parseFloat(document.getElementById('s-pitch').value);
-  const pms   = parseInt(document.getElementById('s-pause').value);
-  const lines = S.lines; const total = lines.length;
-
-  S.busy = true; S.paused = false; S.aborted = false;
-  startKA(); setUI('playing');
-
-  for (let i = from; i < total; i++) {
-    if (S.aborted) break;
-    while (S.paused && !S.aborted) await sleep(80);
-    if (S.aborted) break;
-
-    S.curLine = i;
-    hlLine(i, total);
-
-    const line = lines[i];
-    if (!line) { await sleep(pms * 1.7); continue; }
-
-    // Đọc câu — một utterance cho cả câu (không chia nhỏ khi không có vibrato)
-    await utter(line, rate, pitch);
-
-    if (i < total - 1 && !S.aborted) await sleep(pms);
+  if (!res.ok) {
+    const errText = await res.text().catch(() => res.statusText);
+    if (res.status === 401) throw new Error('API Key không hợp lệ hoặc hết hạn.');
+    if (res.status === 429) throw new Error('Đã vượt giới hạn request. Vui lòng thử lại sau.');
+    throw new Error(`FPT.AI lỗi ${res.status}: ${errText}`);
   }
 
-  stopKA(); S.busy = false;
-  if (!S.aborted) finish();
+  const json = await res.json();
+
+  // FPT trả về link async — file MP3 được tạo bất đồng bộ
+  const audioUrl = json.async;
+  if (!audioUrl) throw new Error('FPT.AI không trả về URL audio. Kiểm tra lại API key và text đầu vào.');
+
+  setStatus('loading', 'Đang chờ FPT.AI xử lý...', 'File đang được tổng hợp...', 40);
+
+  // Poll cho đến khi file sẵn sàng (tối đa 30s)
+  const finalUrl = await pollAudioUrl(audioUrl, 30000, 1000);
+  setStatus('loading', 'Tải về âm thanh...', 'Đang fetch file MP3...', 85);
+  return finalUrl;
 }
 
-function finish() {
-  S.busy = false; S.paused = false;
-  document.getElementById('stxt').textContent = '✓ Đã đọc xong';
-  document.getElementById('dot').style.animation = 'none';
-  document.getElementById('dot').style.background = '#4A8C42';
-  document.getElementById('pbar').style.width    = '100%';
-  document.getElementById('mprog-f').style.width = '100%';
-  document.getElementById('pline-txt').textContent = 'Đã đọc xong ♪';
-  document.getElementById('viewer').querySelectorAll('.pl')
-    .forEach(el => { el.classList.remove('active'); el.classList.add('done'); });
-  setUI('done');
+// Poll URL cho đến khi có thể fetch được (HTTP 200)
+async function pollAudioUrl(url, timeoutMs = 30000, intervalMs = 1200) {
+  const deadline = Date.now() + timeoutMs;
+  let attempt = 0;
+
+  while (Date.now() < deadline) {
+    attempt++;
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      if (res.ok) return url;
+    } catch (e) { /* tiếp tục poll */ }
+
+    const pct = Math.min(80, 40 + attempt * 5);
+    setStatus('loading', 'Đang chờ xử lý...', `Lần kiểm tra thứ ${attempt}...`, pct);
+    await sleep(intervalMs);
+  }
+  throw new Error('Hết thời gian chờ FPT.AI xử lý (30 giây). Vui lòng thử lại.');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ENGINE 2: GOOGLE CLOUD TTS
+// Docs: https://cloud.google.com/text-to-speech
+// CORS: Cho phép từ browser với API key
+// Trả về: base64 audio content → convert sang Blob URL
+// ══════════════════════════════════════════════════════════════
+async function generateGoogle(text) {
+  const key = getKey('google');
+  if (!key) throw new Error('Chưa nhập Google Cloud API Key.');
+
+  const voiceName = document.getElementById('google-voice').value;
+  const rate      = parseFloat(document.getElementById('google-rate').value);
+  const langCode  = 'vi-VN';
+
+  setStatus('loading', 'Đang gửi đến Google Cloud TTS...', 'Kết nối...', 15);
+
+  const body = {
+    input: { text },
+    voice: { languageCode: langCode, name: voiceName },
+    audioConfig: {
+      audioEncoding: 'MP3',
+      speakingRate:   rate,
+      pitch:          1.0,   // 0 = không đổi
+      effectsProfileId: ['headphone-class-device'],
+    },
+  };
+
+  const res = await fetch(
+    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!res.ok) {
+    const errJson = await res.json().catch(() => ({}));
+    const msg = errJson?.error?.message || res.statusText;
+    if (res.status === 400) throw new Error('Text quá dài hoặc không hợp lệ: ' + msg);
+    if (res.status === 403) throw new Error('API Key không có quyền dùng TTS API. Kiểm tra lại Google Cloud Console.');
+    throw new Error(`Google TTS lỗi ${res.status}: ${msg}`);
+  }
+
+  setStatus('loading', 'Đang nhận audio từ Google...', 'Giải mã base64...', 70);
+
+  const json = await res.json();
+  const b64  = json.audioContent;
+  if (!b64) throw new Error('Google TTS không trả về audio. Kiểm tra lại text đầu vào.');
+
+  // Chuyển base64 → Blob → Object URL
+  const binary  = atob(b64);
+  const bytes   = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  const blob    = new Blob([bytes], { type: 'audio/mpeg' });
+  return URL.createObjectURL(blob);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ENGINE 3: AZURE NEURAL TTS
+// Docs: https://learn.microsoft.com/azure/ai-services/speech-service/rest-text-to-speech
+// CORS: Cần header đặc biệt, hoạt động từ browser
+// Flow: POST SSML → nhận binary audio → Blob URL
+// ══════════════════════════════════════════════════════════════
+async function generateAzure(text) {
+  const key    = getKey('azure');
+  if (!key) throw new Error('Chưa nhập Azure Subscription Key.');
+
+  const voice  = document.getElementById('azure-voice').value;
+  const region = document.getElementById('azure-region').value;
+  const rateVal= parseInt(document.getElementById('azure-rate').value);
+  const rateStr= (rateVal >= 0 ? '+' : '') + rateVal + '%';
+
+  setStatus('loading', 'Đang kết nối Azure Neural TTS...', 'Xây dựng SSML...', 10);
+
+  // Xây dựng SSML với kiểm soát tốc độ và pitch
+  const ssml = `<speak version='1.0' xml:lang='vi-VN'>
+  <voice xml:lang='vi-VN' name='${voice}'>
+    <prosody rate='${rateStr}' pitch='+2%'>
+      ${escSsml(text)}
+    </prosody>
+  </voice>
+</speak>`;
+
+  const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
+
+  setStatus('loading', 'Đang tổng hợp giọng Azure...', 'Neural TTS đang xử lý...', 35);
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': key,
+      'Content-Type':  'application/ssml+xml',
+      'X-Microsoft-OutputFormat': 'audio-24khz-160kbitrate-mono-mp3',
+      'User-Agent':    'NgamThoAI/1.0',
+    },
+    body: ssml,
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Azure Key không hợp lệ hoặc sai region.');
+    if (res.status === 400) throw new Error('SSML không hợp lệ. Kiểm tra text đầu vào.');
+    throw new Error(`Azure TTS lỗi ${res.status}: ${res.statusText}`);
+  }
+
+  setStatus('loading', 'Tải audio từ Azure...', 'Đang nhận binary...', 80);
+
+  const arrayBuffer = await res.arrayBuffer();
+  const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+  return URL.createObjectURL(blob);
+}
+
+// Escape ký tự đặc biệt trong SSML
+function escSsml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ENGINE 4: WEB SPEECH API (fallback)
+// Xử lý đặc biệt: không tạo file, phát trực tiếp
+// Dùng async/await queue để đọc từng dòng
+// ══════════════════════════════════════════════════════════════
+let wsBusy = false;
+let wsAbort = false;
+
+function initWebSpeech() {
+  const st = document.getElementById('ws-status');
+  if (!('speechSynthesis' in window)) {
+    st.textContent = '❌ Trình duyệt không hỗ trợ Web Speech API';
+    st.style.color = 'var(--red)';
+    return;
+  }
+
+  const check = () => {
+    const all = window.speechSynthesis.getVoices();
+    const vi  = all.filter(v => v.lang.toLowerCase().startsWith('vi'));
+    if (vi.length > 0) {
+      APP.wsVoice = vi[0];
+      st.textContent = `✅ Tìm thấy ${vi.length} giọng tiếng Việt: ${vi.map(v=>v.name).join(', ')}`;
+      st.style.color = 'var(--green)';
+    } else if (all.length > 0) {
+      st.textContent = `⚠️ Không có giọng tiếng Việt. Có ${all.length} giọng khác — sẽ dùng giọng mặc định (chất lượng thấp).`;
+      st.style.color = 'var(--warn-txt)';
+    } else {
+      st.textContent = '❌ Không tải được giọng. Thử dùng Chrome hoặc Edge.';
+      st.style.color = 'var(--red)';
+    }
+  };
+
+  window.speechSynthesis.onvoiceschanged = check;
+  setTimeout(check, 500);
+}
+
+async function generateWebSpeech(text) {
+  // Dừng nếu đang đọc
+  window.speechSynthesis.cancel();
+  wsAbort = false;
+
+  const lines = text.split('\n').filter(l => l.trim());
+  const rate  = 0.55;
+  const pitch = 1.05;
+  const pauseMs = 1000;
+
+  buildViewer(text);
+  setStatus('loading', 'Đang đọc thơ...', 'Web Speech API · Không tạo file MP3', 30);
+
+  // Player thông báo
+  document.getElementById('player-title').textContent = 'Đang ngâm thơ (Web Speech)';
+  document.getElementById('player-meta').textContent  = 'Không hỗ trợ tải về khi dùng Web Speech';
+  document.getElementById('player').classList.add('show');
+  document.getElementById('dl-btn').style.display = 'none';
+
+  for (let i = 0; i < lines.length; i++) {
+    if (wsAbort) break;
+    const pct = Math.round((i / lines.length) * 100);
+    setStatus('loading', `Dòng ${i+1}/${lines.length}`, lines[i], pct);
+
+    await speakWS(lines[i], rate, pitch);
+    if (!wsAbort) await sleep(pauseMs);
+  }
+
+  document.getElementById('dl-btn').style.display = '';
+  if (!wsAbort) {
+    setStatus('ok', 'Đã đọc xong!', 'Web Speech API · Thử dùng FPT.AI để có file MP3', 100);
+  }
+
+  APP.busy = false;
   document.getElementById('gen-btn').disabled = false;
   document.getElementById('bico').textContent = '♪';
 }
 
-// ── BUTTON HANDLERS ───────────────────────────────────────────
-function handleGenerate() {
-  if (!S.selectedVoice) { alert('Chưa có giọng tiếng Việt. Vui lòng cài đặt theo hướng dẫn.'); return; }
-  const lines = getLines();
-  if (!lines.some(l => l)) { alert('Vui lòng nhập bài thơ trước!'); return; }
-  abortAndRun(lines);
+function speakWS(text, rate, pitch) {
+  return new Promise(res => {
+    if (wsAbort) { res(); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = rate; u.pitch = pitch; u.volume = 1;
+    if (APP.wsVoice) { u.voice = APP.wsVoice; u.lang = APP.wsVoice.lang; }
+    else u.lang = 'vi-VN';
+    u.onend = u.onerror = () => res();
+    window.speechSynthesis.speak(u);
+  });
 }
 
-async function abortAndRun(lines) {
-  S.aborted = true; S.paused = false;
-  stopKA(); window.speechSynthesis.cancel();
-  await waitIdle();
-
-  S.lines = lines; S.curLine = 0; S.aborted = false;
-
-  buildViewer(lines);
-  document.getElementById('progress').classList.add('show');
-  document.getElementById('player').classList.add('show');
-  document.getElementById('dot').style.animation = '';
-  document.getElementById('dot').style.background = '';
-  document.getElementById('pbar').style.width  = '0%';
-  document.getElementById('stxt').textContent = 'Đang bắt đầu...';
-  document.getElementById('gen-btn').disabled = true;
-  document.getElementById('bico').textContent = '♬';
-
-  recite(0);
+// ── UTILITIES ─────────────────────────────────────────────────
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
 }
 
-function onPlayPause() {
-  if (!S.busy && !S.paused) { handleGenerate(); return; }
-  if (S.paused) {
-    S.paused = false;
-    try { window.speechSynthesis.resume(); } catch(e){}
-    setUI('playing');
-  } else {
-    S.paused = true;
-    try { window.speechSynthesis.pause(); } catch(e){}
-    setUI('paused');
+// Dừng Web Speech khi rời trang
+window.addEventListener('beforeunload', () => {
+  wsAbort = true;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  // Thu hồi Blob URL để giải phóng bộ nhớ
+  if (APP.currentAudioUrl && APP.currentAudioUrl.startsWith('blob:')) {
+    URL.revokeObjectURL(APP.currentAudioUrl);
   }
-}
-
-async function onStop() {
-  S.aborted = true; S.paused = false; S.busy = false;
-  stopKA(); window.speechSynthesis.cancel();
-  await waitIdle();
-  setUI('stopped');
-  document.getElementById('gen-btn').disabled = !S.voicesLoaded || S.viVoices.length === 0;
-  document.getElementById('bico').textContent = '♪';
-}
-
-function setUI(state) {
-  const b = document.getElementById('play-btn');
-  if (state === 'playing') { b.textContent = '⏸'; b.title = 'Tạm dừng'; }
-  else                      { b.textContent = '▶'; b.title = state === 'paused' ? 'Tiếp tục' : 'Phát lại'; }
-}
-
-// Dừng khi rời trang
-window.addEventListener('pagehide',     () => window.speechSynthesis.cancel());
-window.addEventListener('beforeunload', () => window.speechSynthesis.cancel());
+});
 </script>
 </body>
 </html>
